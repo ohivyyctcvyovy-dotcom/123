@@ -41,7 +41,7 @@ function hit(x,y){return wall(x,y)}
 function move(obj,dx,dy){if(!hit(obj.x+dx,obj.y))obj.x+=dx;if(!hit(obj.x,obj.y+dy))obj.y+=dy}
 function rand(a,b){return a+Math.random()*(b-a)}
 function spawnBots(n){bots=[];for(let i=0;i<n;i++){let x,y,tries=0;do{x=rand(2,mapW-2);y=rand(2,mapH-2);tries++}while((wall(x,y)||Math.hypot(x-player.x,y-player.y)<4)&&tries<100);bots.push({x,y,a:rand(0,Math.PI*2),hp:100,alive:true,think:rand(.2,1.8),shoot:rand(1,3),walk:rand(0,6),hit:0})}}
-function resizeAndStart(){low=$('low').checked;sens=+$('sens').value;resize();player={x:3.5,y:3.5,a:0};ammo=30;health=100;kills=0;spawnBots(+$('botcount').value);$('ammo').textContent=ammo+' / ∞';$('health').textContent='♥ '+health;$('score').textContent='ELIMINAÇÕES 0';lobby.style.display='none';game.style.display='block';running=true;paused=false;last=performance.now();requestAnimationFrame(loop);toast('ELIMINE OS BOTS • TOQUE PARA ATIRAR')}
+function resizeAndStart(){low=$('low').checked;sens=+$('sens').value;lobby.style.display='none';game.style.display='block';resize();player={x:3.5,y:3.5,a:0};ammo=30;health=100;kills=0;spawnBots(+$('botcount').value);$('ammo').textContent=ammo+' / ∞';$('health').textContent='♥ '+health;$('score').textContent='ELIMINAÇÕES 0';running=true;paused=false;last=performance.now();requestAnimationFrame(loop);toast('ELIMINE OS BOTS • TOQUE PARA ATIRAR')}
 $('start').onclick=()=>{try{audioCtx?.resume()}catch{} resizeAndStart()};
 $('settings').onclick=()=>{$('opts').style.display=$('opts').style.display==='none'?'block':'none'};
 $('pause').onclick=()=>{paused=!paused;$('pause').textContent=paused?'CONTINUAR':'PAUSAR';if(!paused){last=performance.now();requestAnimationFrame(loop)}};
