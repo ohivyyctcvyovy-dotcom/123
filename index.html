@@ -144,9 +144,7 @@ window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===
   const key=new THREE.DirectionalLight(0xffdca0,2.1);key.position.set(-3,5,4);scene.add(key);
   const camera=new THREE.PerspectiveCamera(38,Math.max(.1,canvas.clientWidth/canvas.clientHeight),.1,100);camera.position.set(0,1.45,6.4);camera.lookAt(0,1.15,0);
   const loader=new GLTFLoader();
-  // Expose joystick movement to the existing game simulation.
-  window.__ozJoystick=joystick;
-  function joystickDown(e){if(!window.gameState)return;e.preventDefault();const r=canvas.getBoundingClientRect();joystick.active=true;joystick.id=e.pointerId;joystick.cx=e.clientX;joystick.cy=e.clientY;}
+  // Lobby renderer is independent from the gameplay joystick.
   // Replace the old drag-only movement with a visible analog stick and continuous movement.
   const move=document.querySelector('.ctl.move');
   if(move){
@@ -185,6 +183,7 @@ window.__oz3dActive=true;
  const canvas=document.getElementById('game3d'), view=document.getElementById('view'), knob=document.getElementById('joystickKnob');
  const root=document.getElementById('game');
  const joystick={x:0,y:0,active:false,id:null,cx:0,cy:0,radius:44};
+ window.__ozJoystick=joystick;
  let THREE,renderer,scene,camera,world,weaponRig,weaponModel,armsModel,enemyTemplate,mixer=null,last=performance.now(),lastRender=0,renderedFrames=0,lastFpsTime=performance.now();
  const enemyMeshes=[];
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
