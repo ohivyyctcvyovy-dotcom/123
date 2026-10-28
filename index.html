@@ -36,7 +36,7 @@
 /* JOYSTICK VISIVEL E CONTROLES MOBILE */
 .ctl.joystick{display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle,#223344aa,#0a111c88);border:2px solid #d4e2f366;box-shadow:inset 0 0 0 7px #d7e4f00b,0 4px 18px #0008;touch-action:none}
 .joystick-knob{position:absolute;left:50%;top:50%;width:43%;height:43%;border-radius:50%;transform:translate(-50%,-50%);background:linear-gradient(145deg,#f4f7fa,#7d91a5);border:2px solid #f0c45d;box-shadow:0 3px 12px #000a,inset 0 1px 3px #fff;pointer-events:none}
-#game3d{z-index:1;touch-action:none}
+#game3d{z-index:1;touch-action:none}\n#soldierFallback{opacity:1;z-index:1}\n#lobby3d{z-index:2;opacity:0;pointer-events:none}\n#game3d{display:block;visibility:visible}\n
 
 </style></head><body>
 <div id="lobby" class="screen"><div class="lobbybg"></div><div class="neon">NEXUS</div><svg class="soldier" id="soldierFallback" viewBox="0 0 320 600" role="img" aria-label="Operador tático de reserva"><rect x="108" y="100" width="105" height="270" rx="32" fill="#273647"/><circle cx="160" cy="75" r="42" fill="#9b755e"/><path d="M116 65 Q115 20 160 25 Q208 22 204 65Z" fill="#111c29"/><path d="M110 165 L45 360 L80 372 L145 210 M205 165 L272 345 L240 362 L180 210" stroke="#273647" stroke-width="36" stroke-linecap="round"/><path d="M135 350 L110 555 L150 555 L166 375 M180 350 L212 555 L250 555 L215 350" fill="#151e2a"/></svg><canvas id="lobby3d" class="soldier" aria-label="Personagem 3D gratuito" style="pointer-events:none;opacity:0"></canvas><div class="topbar"><div class="logo">OPERAÇÃO ZERO</div><div class="righttools"><button id="installApp" class="installbtn" type="button">⬇ INSTALAR</button><div style="display:flex;gap:6px;align-items:center"><button class="report" onclick="openPanel('denuncia')">⚠ REPORTAR</button></div></div></div>
@@ -134,7 +134,7 @@ window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===
   renderer.outputColorSpace=THREE.SRGBColorSpace;
   const scene=new THREE.Scene(); scene.add(new THREE.HemisphereLight(0xd9e8ff,0x202a37,2));
   const key=new THREE.DirectionalLight(0xffdca0,2.1);key.position.set(-3,5,4);scene.add(key);
-  const camera=new THREE.PerspectiveCamera(32,Math.max(.1,canvas.clientWidth/canvas.clientHeight),.1,100);camera.position.set(0,1.45,6.4);
+  const camera=new THREE.PerspectiveCamera(38,Math.max(.1,canvas.clientWidth/canvas.clientHeight),.1,100);camera.position.set(0,1.45,6.4);camera.lookAt(0,1.15,0);
   const loader=new GLTFLoader();
   // Expose joystick movement to the existing game simulation.
   window.__ozJoystick=joystick;
@@ -150,9 +150,9 @@ window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===
  let mixer=null, model=null, last=performance.now();
   loader.load('./assets/3d/character-male-a.glb',g=>{
    model=g.scene; const box=new THREE.Box3().setFromObject(model), size=box.getSize(new THREE.Vector3()), center=box.getCenter(new THREE.Vector3());
-   model.position.sub(center); const scale=3.8/Math.max(size.y,.1); model.scale.setScalar(scale); model.position.y=-.05;
+   model.position.sub(center); const scale=2.55/Math.max(size.y,.1); model.scale.setScalar(scale); model.position.y=1.22;
    scene.add(model); if(g.animations&&g.animations.length){mixer=new THREE.AnimationMixer(model);const idle=THREE.AnimationClip.findByName(g.animations,'idle')||g.animations[0];mixer.clipAction(idle).play();}
-   canvas.style.opacity='1'; if(fallback)fallback.style.opacity='0';
+   model.rotation.y=Math.PI;canvas.style.opacity='1'; if(fallback)fallback.style.opacity='0';
   },undefined,err=>console.warn('Modelo 3D do lobby não carregou; mantendo reserva SVG.',err));
   function resize(){const w=Math.max(1,canvas.clientWidth),h=Math.max(1,canvas.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
   new ResizeObserver(resize).observe(canvas);
@@ -169,7 +169,7 @@ window.__oz3dActive=true;
  const canvas=document.getElementById('game3d'), view=document.getElementById('view'), knob=document.getElementById('joystickKnob');
  const root=document.getElementById('game');
  const joystick={x:0,y:0,active:false,id:null,cx:0,cy:0,radius:44};
- let THREE,renderer,scene,camera,world,weaponRig,weaponModel,armsModel,enemyTemplate,mixer=null,last=performance.now(),lastRender=0;
+ let THREE,renderer,scene,camera,world,weaponRig,weaponModel,armsModel,enemyTemplate,mixer=null,last=performance.now(),lastRender=0,renderedFrames=0,lastFpsTime=performance.now();
  const enemyMeshes=[];
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  try{
@@ -237,17 +237,38 @@ window.__oz3dActive=true;
    return g;
   }
   enemyTemplate=makeSoldier();
-  try{const gltf=await loader.loadAsync('./assets/3d/character-male-a.glb');enemyTemplate=gltf.scene;const b=new THREE.Box3().setFromObject(enemyTemplate),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3());enemyTemplate.position.sub(center);enemyTemplate.scale.setScalar(1.7/Math.max(.1,size.y));enemyTemplate.position.y=.85;}catch(e){console.warn('Modelo humano GLB indisponível; usando modelo 3D local.',e)}
+  // Load the enemy model asynchronously: the game loop must never wait for a network asset.
+  loader.load('./assets/3d/character-male-a.glb',gltf=>{
+   try{const candidate=gltf.scene;const b=new THREE.Box3().setFromObject(candidate),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3());candidate.position.sub(center);candidate.scale.setScalar(1.65/Math.max(.1,size.y));candidate.position.y=.83;enemyTemplate=candidate;
+    enemyMeshes.forEach((old,i)=>{const replacement=candidate.clone(true);replacement.visible=old.visible;replacement.position.copy(old.position);replacement.rotation.copy(old.rotation);scene.remove(old);enemyMeshes[i]=replacement;scene.add(replacement)});
+   }catch(e){console.warn('Mantendo personagem 3D de reserva.',e)}
+  },undefined,e=>console.warn('Usando personagem 3D de reserva.',e));
   for(let i=0;i<10;i++){const bot=enemyTemplate.clone(true);bot.visible=false;scene.add(bot);enemyMeshes.push(bot)}
-  weaponRig=new THREE.Group();camera.add(weaponRig);weaponRig.position.set(.34,-.31,-.62);weaponRig.rotation.set(-.06,-.12,-.02);
-  // Simple, genuinely 3D rifle fallback shown immediately.
-  const gunMat=new THREE.MeshStandardMaterial({color:0x222b33,roughness:.5,metalness:.5}),metalMat=new THREE.MeshStandardMaterial({color:0x77848a,roughness:.45,metalness:.7}),stockMat=new THREE.MeshStandardMaterial({color:0x514735,roughness:.9});
-  function gunPart(geo,mat,pos,rot=[0,0,0]){const m=new THREE.Mesh(geo,mat);m.position.set(...pos);m.rotation.set(...rot);weaponRig.add(m);return m}
-  gunPart(new THREE.BoxGeometry(.16,.16,.52),gunMat,[0,0,0]);gunPart(new THREE.CylinderGeometry(.025,.025,.55,7),metalMat,[0,.02,-.46],[Math.PI/2,0,0]);gunPart(new THREE.BoxGeometry(.13,.2,.15),stockMat,[0,-.02,.3]);gunPart(new THREE.BoxGeometry(.08,.22,.12),gunMat,[0,-.17,-.03],[.18,0,0]);gunPart(new THREE.BoxGeometry(.1,.2,.13),gunMat,[0,-.18,-.12]);
-  // Load actual weapon and arms GLBs; hide fallback geometry only after successful load.
-  const fallbackGun=weaponRig.children.slice();
-  try{const gltf=await loader.loadAsync('./assets/3d/assault-rifle.glb');weaponModel=gltf.scene;const box=new THREE.Box3().setFromObject(weaponModel),size=box.getSize(new THREE.Vector3());weaponModel.scale.setScalar(.48/Math.max(size.x,size.y,size.z,.01));weaponModel.rotation.set(0,Math.PI,0);weaponModel.position.set(0,-.03,-.16);weaponRig.add(weaponModel);fallbackGun.forEach(o=>o.visible=false);}catch(e){console.warn('GLB da arma indisponível; usando rifle 3D de reserva.',e)}
-  try{const gltf=await loader.loadAsync('./assets/3d/fps-arms.glb');armsModel=gltf.scene;const box=new THREE.Box3().setFromObject(armsModel),size=box.getSize(new THREE.Vector3());armsModel.scale.setScalar(.56/Math.max(size.x,size.y,size.z,.01));armsModel.position.set(-.12,-.22,-.06);armsModel.rotation.set(0,Math.PI,0);weaponRig.add(armsModel);}catch(e){console.warn('GLB de braços indisponível; rifle 3D continua visível.',e)}
+  // Procedural first-person rig: both arms/hands and a large rifle aligned forward (-Z).
+  weaponRig=new THREE.Group();camera.add(weaponRig);weaponRig.position.set(.31,-.30,-.52);weaponRig.rotation.set(-.025,0,0);
+  const gunMat=new THREE.MeshStandardMaterial({color:0x202a32,roughness:.48,metalness:.48});
+  const metalMat=new THREE.MeshStandardMaterial({color:0x77848a,roughness:.42,metalness:.72});
+  const stockMat=new THREE.MeshStandardMaterial({color:0x514735,roughness:.88});
+  const sleeveMat=new THREE.MeshStandardMaterial({color:0x273746,roughness:.95});
+  const gloveMat=new THREE.MeshStandardMaterial({color:0x171d22,roughness:.9});
+  const skinMat=new THREE.MeshStandardMaterial({color:0x9a765d,roughness:1});
+  function gunPart(geo,mat,pos,rot=[0,0,0],parent=weaponRig){const m=new THREE.Mesh(geo,mat);m.position.set(...pos);m.rotation.set(...rot);parent.add(m);return m}
+  // Forearms enter the frame from both lower corners; gloves visibly grip the rifle.
+  gunPart(new THREE.CapsuleGeometry(.085,.48,3,7),sleeveMat,[-.29,-.23,-.02],[0,0,-.48]);
+  gunPart(new THREE.CapsuleGeometry(.085,.46,3,7),sleeveMat,[.22,-.22,-.04],[0,0,.45]);
+  gunPart(new THREE.SphereGeometry(.09,8,6),gloveMat,[-.12,-.105,-.28]);
+  gunPart(new THREE.SphereGeometry(.09,8,6),gloveMat,[.17,-.105,-.26]);
+  gunPart(new THREE.BoxGeometry(.16,.14,.46),gunMat,[.02,.015,-.06]);
+  gunPart(new THREE.BoxGeometry(.13,.13,.36),stockMat,[.025,-.005,.28]);
+  gunPart(new THREE.BoxGeometry(.095,.16,.24),gunMat,[.025,-.13,-.07],[.16,0,0]);
+  gunPart(new THREE.BoxGeometry(.07,.13,.11),gloveMat,[.025,-.20,-.12]);
+  gunPart(new THREE.BoxGeometry(.075,.075,.66),metalMat,[.02,.025,-.52]);
+  gunPart(new THREE.CylinderGeometry(.024,.024,.48,8),gunMat,[.02,.025,-.94],[Math.PI/2,0,0]);
+  gunPart(new THREE.BoxGeometry(.07,.035,.16),gunMat,[.02,.095,-.40]);
+  gunPart(new THREE.BoxGeometry(.11,.035,.12),metalMat,[.02,.105,-.38]);
+  gunPart(new THREE.BoxGeometry(.105,.22,.12),gunMat,[.02,-.13,-.24],[.12,0,0]);
+  gunPart(new THREE.BoxGeometry(.025,.045,.17),metalMat,[.02,-.02,-.59]);
+  // Keep GLB weapon/arms as optional assets only; never let unknown model axes turn the rifle backwards.
   // Keep all rendering light: no realtime shadows, limited pixel ratio, simple materials.
   function resize(){const w=Math.max(1,canvas.clientWidth||innerWidth),h=Math.max(1,canvas.clientHeight||innerHeight);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,.72));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
   addEventListener('resize',resize);
@@ -265,7 +286,7 @@ window.__oz3dActive=true;
     mesh.visible=!!bot.alive;mesh.position.set(bot.x,.02,bot.y);mesh.rotation.y=-(bot.a||0)-Math.PI/2;
     const scale=bot.team==='red'?1:1;mesh.scale.multiplyScalar(1);mesh.traverse(o=>{if(o.isMesh&&o.material&&o.material.color){if(!o.userData.ozTint){o.userData.ozBase=o.material.color.clone();o.userData.ozTint=true}o.material.color.copy(o.userData.ozBase).multiplyScalar(bot.team==='red'?1:.8)}})
    }
-   weaponRig.position.x=.34+Math.sin(now*.006)*.008;weaponRig.position.y=-.31+Math.sin(now*.009)*.006;
+   weaponRig.position.x=.31+Math.sin(now*.006)*.006;weaponRig.position.y=-.30+Math.sin(now*.009)*.008;
    // 3D rifle remains visible even while model/arms are loading.
    if(root.classList.contains('hidden'))return;
    renderer.render(scene,camera);
