@@ -243,13 +243,13 @@ window.__oz3dActive=true;
   enemyTemplate=makeSoldier();
   // Load the enemy model asynchronously: the game loop must never wait for a network asset.
   loader.load('./assets/3d/character-male-a.glb',gltf=>{
-   try{const candidate=gltf.scene;const b=new THREE.Box3().setFromObject(candidate),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3());candidate.position.sub(center);candidate.scale.setScalar(1.65/Math.max(.1,size.y));candidate.position.y=.83;enemyTemplate=candidate;
+   try{const candidate=gltf.scene;const b=new THREE.Box3().setFromObject(candidate),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3());candidate.position.sub(center);candidate.scale.setScalar(1.65/Math.max(.1,size.y));candidate.position.y=.83;candidate.userData.ozGLBCharacter=true;enemyTemplate=candidate;
     enemyMeshes.forEach((old,i)=>{const replacement=candidate.clone(true);replacement.visible=old.visible;replacement.position.copy(old.position);replacement.rotation.copy(old.rotation);scene.remove(old);enemyMeshes[i]=replacement;scene.add(replacement)});
    }catch(e){console.warn('Mantendo personagem 3D de reserva.',e)}
   },undefined,e=>console.warn('Usando personagem 3D de reserva.',e));
   for(let i=0;i<10;i++){const bot=enemyTemplate.clone(true);bot.visible=false;scene.add(bot);enemyMeshes.push(bot)}
   // Procedural first-person rig: both arms/hands and a large rifle aligned forward (-Z).
-  weaponRig=new THREE.Group();camera.add(weaponRig);weaponRig.position.set(.31,-.30,-.52);weaponRig.rotation.set(-.025,0,0);
+  weaponRig=new THREE.Group();camera.add(weaponRig);weaponRig.position.set(.32,-.30,-.42);weaponRig.scale.setScalar(1.38);weaponRig.rotation.set(-.025,0,0);
   const gunMat=new THREE.MeshStandardMaterial({color:0x202a32,roughness:.48,metalness:.48});
   const metalMat=new THREE.MeshStandardMaterial({color:0x77848a,roughness:.42,metalness:.72});
   const stockMat=new THREE.MeshStandardMaterial({color:0x514735,roughness:.88});
@@ -287,7 +287,7 @@ window.__oz3dActive=true;
    const index=window.mapIndex||0;mapGroups.forEach((mg,i)=>mg.visible=i===index);
    for(let i=0;i<enemyMeshes.length;i++){
     const bot=g.bots[i],mesh=enemyMeshes[i];if(!bot){mesh.visible=false;continue}
-    mesh.visible=!!bot.alive;mesh.position.set(bot.x,.02,bot.y);mesh.rotation.y=-(bot.a||0)-Math.PI/2;
+    mesh.visible=!!bot.alive;mesh.position.set(bot.x,mesh.userData.ozGLBCharacter?.85:.02,bot.y);mesh.rotation.y=-(bot.a||0)-Math.PI/2;
     const scale=bot.team==='red'?1:1;mesh.scale.multiplyScalar(1);mesh.traverse(o=>{if(o.isMesh&&o.material&&o.material.color){if(!o.userData.ozTint){o.userData.ozBase=o.material.color.clone();o.userData.ozTint=true}o.material.color.copy(o.userData.ozBase).multiplyScalar(bot.team==='red'?1:.8)}})
    }
    weaponRig.position.x=.31+Math.sin(now*.006)*.006;weaponRig.position.y=-.30+Math.sin(now*.009)*.008;
