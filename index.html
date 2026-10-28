@@ -22,21 +22,17 @@ function openPanel(name){panel=name;let title='',body='';if(name==='criar'){titl
 function closePanel(){$('modal').classList.add('hidden')}
 function cycleMap(d){mapIndex=(mapIndex+d+maps.length)%maps.length;let el=$('mapLabel');if(el)el.textContent=maps[mapIndex].name}
 function createRoom(){let name=$('roomTitle')?.value||'Sala nova',mode=$('roomMode')?.value||'Mata-mata';let row=document.createElement('tr');row.innerHTML='<td>804</td><td>'+mode+'</td><td>'+maps[mapIndex].name+'</td><td></td><td style="color:#37dca0">Esperando</td>';row.children[3].textContent=name;$('roomRows').prepend(row);row.onclick=()=>selectRoom(row);closePanel();startGame(true)}
-function saveSettings(){settings.quality=$('quality').value;settings.showFPS=$('showFPS').checked;settings.opacity=+$('opacity').value;settings.size=+$('size').value;settings.sens=+$('sens').value;localStorage.setItem('oz-settings',JSON.stringify(settings));
+function saveSettings(){settings.quality=$('quality').value;settings.showFPS=$('showFPS').checked;settings.opacity=+$('opacity').value;settings.size=+$('size').value;settings.sens=+$('sens').value;localStorage.setItem('oz-settings',JSON.stringify(settings));applySettings();closePanel()}
 let installPromptEvent=null;
 const installButton=document.getElementById('installApp');
-if('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-}
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPromptEvent=e;installButton.textContent='⬇ INSTALAR JOGO';});
-window.addEventListener('appinstalled',()=>{installPromptEvent=null;installButton.textContent='✓ INSTALADO';installButton.disabled=true;});
-installButton.addEventListener('click',async()=>{
-  if(installPromptEvent){installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;return;}
-  if(window.matchMedia('(display-mode: standalone)').matches){alert('Operação Zero já está instalado no celular.');return;}
-  alert('Para instalar no Android: abra este jogo no Google Chrome, toque nos três pontinhos (⋮) e escolha “Instalar app” ou “Adicionar à tela inicial”. Se a opção não aparecer, recarregue a página e tente novamente.');
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPromptEvent=e;if(installButton)installButton.textContent='⬇ INSTALAR JOGO';});
+window.addEventListener('appinstalled',()=>{installPromptEvent=null;if(installButton){installButton.textContent='✓ INSTALADO';installButton.disabled=true;}});
+if(installButton)installButton.addEventListener('click',async()=>{
+ if(installPromptEvent){installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;return;}
+ if(window.matchMedia('(display-mode: standalone)').matches){alert('Operação Zero já está instalado no celular.');return;}
+ alert('Para instalar no Android: abra este jogo no Google Chrome, toque nos três pontinhos (⋮) e escolha “Instalar app” ou “Adicionar à tela inicial”. Se a opção não aparecer, recarregue a página e tente novamente.');
 });
-
-applySettings();closePanel()}
 try{Object.assign(settings,JSON.parse(localStorage.getItem('oz-settings')||'{}'))}catch(e){}
 function applySettings(){document.querySelectorAll('.ctl').forEach(x=>{x.style.opacity=settings.opacity;x.style.transform='scale('+settings.size+')'});$('fps').style.display=settings.showFPS?'block':'none'}
 function sendChat(){let v=$('chatInput').value.trim();if(v){$('chatlines').innerHTML+=' <br><b>Lucaszin:</b> '+escapeHtml(v);$('chatInput').value=''}}
