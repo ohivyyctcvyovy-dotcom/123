@@ -36,7 +36,11 @@
 /* JOYSTICK VISIVEL E CONTROLES MOBILE */
 .ctl.joystick{display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle,#223344aa,#0a111c88);border:2px solid #d4e2f366;box-shadow:inset 0 0 0 7px #d7e4f00b,0 4px 18px #0008;touch-action:none}
 .joystick-knob{position:absolute;left:50%;top:50%;width:43%;height:43%;border-radius:50%;transform:translate(-50%,-50%);background:linear-gradient(145deg,#f4f7fa,#7d91a5);border:2px solid #f0c45d;box-shadow:0 3px 12px #000a,inset 0 1px 3px #fff;pointer-events:none}
-#game3d{z-index:1;touch-action:none}\n#soldierFallback{opacity:1;z-index:1}\n#lobby3d{z-index:2;opacity:0;pointer-events:none}\n#game3d{display:block;visibility:visible}\n
+#game3d{z-index:1;touch-action:none}
+#soldierFallback{opacity:1;z-index:1}
+#lobby3d{z-index:2;opacity:0;pointer-events:none}
+#game3d{display:block;visibility:visible}
+
 
 </style></head><body>
 <div id="lobby" class="screen"><div class="lobbybg"></div><div class="neon">NEXUS</div><svg class="soldier" id="soldierFallback" viewBox="0 0 320 600" role="img" aria-label="Operador tático de reserva"><rect x="108" y="100" width="105" height="270" rx="32" fill="#273647"/><circle cx="160" cy="75" r="42" fill="#9b755e"/><path d="M116 65 Q115 20 160 25 Q208 22 204 65Z" fill="#111c29"/><path d="M110 165 L45 360 L80 372 L145 210 M205 165 L272 345 L240 362 L180 210" stroke="#273647" stroke-width="36" stroke-linecap="round"/><path d="M135 350 L110 555 L150 555 L166 375 M180 350 L212 555 L250 555 L215 350" fill="#151e2a"/></svg><canvas id="lobby3d" class="soldier" aria-label="Personagem 3D gratuito" style="pointer-events:none;opacity:0"></canvas><div class="topbar"><div class="logo">OPERAÇÃO ZERO</div><div class="righttools"><button id="installApp" class="installbtn" type="button">⬇ INSTALAR</button><div style="display:flex;gap:6px;align-items:center"><button class="report" onclick="openPanel('denuncia')">⚠ REPORTAR</button></div></div></div>
