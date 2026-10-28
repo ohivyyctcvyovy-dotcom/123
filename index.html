@@ -146,7 +146,7 @@ if(moveControl){
   if(!window.gameState)return;
   e.preventDefault();e.stopPropagation();
   const r=moveControl.getBoundingClientRect();
-  stick.active=true;stick.id=e.pointerId;stick.cx=r.left+r.width/2;stick.cy=r.top+r.height/2;
+  window.__ozJoystick=stick;stick.active=true;stick.id=e.pointerId;stick.cx=r.left+r.width/2;stick.cy=r.top+r.height/2;
   try{moveControl.setPointerCapture(e.pointerId)}catch(_){}
   updateStick(e);
  },{passive:false});
@@ -242,49 +242,10 @@ window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===
   canvas.addEventListener('pointermove',e=>{if(lookPointer!==e.pointerId||!window.gameState)return;const dx=e.clientX-lookX;window.gameState.player.a-=dx*.006*(window.settings?.sens||1);lookX=e.clientX;},{passive:true});
   const stopLook=e=>{if(lookPointer===e.pointerId)lookPointer=null};
   canvas.addEventListener('pointerup',stopLook);canvas.addEventListener('pointercancel',stopLook);
- let mixer=null, model=null, last=performance.now();
-  // Soldier militar 3D criado com malhas reais, sem depender de modelo genérico externo.
-  function makeLobbySoldier(){
-   const g=new THREE.Group();
-   const uniform=new THREE.MeshStandardMaterial({color:0x344334,roughness:.92});
-   const vest=new THREE.MeshStandardMaterial({color:0x202a25,roughness:.88});
-   const helmetMat=new THREE.MeshStandardMaterial({color:0x273329,roughness:.8});
-   const skin=new THREE.MeshStandardMaterial({color:0x9b7558,roughness:1});
-   const boot=new THREE.MeshStandardMaterial({color:0x171b19,roughness:.95});
-   const gun=new THREE.MeshStandardMaterial({color:0x151b1b,metalness:.45,roughness:.6});
-   const part=(geo,mat,x,y,z,rx=0,ry=0,rz=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);g.add(m);return m};
-   // torso, plate carrier and pouches
-   part(new THREE.BoxGeometry(.62,.78,.34),uniform,0,1.28,0);
-   part(new THREE.BoxGeometry(.52,.52,.13),vest,0,1.34,.205);
-   for(const x of [-.17,0,.17])part(new THREE.BoxGeometry(.12,.15,.08),uniform,x,1.22,.29);
-   // head, helmet, brim and goggles
-   part(new THREE.SphereGeometry(.19,12,9),skin,0,1.86,0);
-   part(new THREE.SphereGeometry(.215,12,8),helmetMat,0,1.98,-.015);
-   part(new THREE.BoxGeometry(.42,.055,.31),helmetMat,0,1.91,.055);
-   part(new THREE.BoxGeometry(.25,.065,.035),gun,0,1.85,.18);
-   // legs and boots
-   part(new THREE.BoxGeometry(.22,.62,.25),uniform,-.18,.63,0,0,0,-.035);
-   part(new THREE.BoxGeometry(.22,.62,.25),uniform,.18,.63,0,0,0,.035);
-   part(new THREE.BoxGeometry(.24,.14,.36),boot,-.18,.28,.045);
-   part(new THREE.BoxGeometry(.24,.14,.36),boot,.18,.28,.045);
-   // arms and gloves, posed to hold the rifle
-   part(new THREE.CapsuleGeometry(.105,.42,4,8),uniform,-.39,1.34,.015,0,0,-.28);
-   part(new THREE.CapsuleGeometry(.105,.42,4,8),uniform,.39,1.34,.04,0,0,.30);
-   part(new THREE.SphereGeometry(.105,8,6),boot,-.27,1.12,.23);
-   part(new THREE.SphereGeometry(.105,8,6),boot,.23,1.13,.24);
-   part(new THREE.BoxGeometry(.11,.12,.72),gun,.12,1.19,.42,0,0,0);
-   part(new THREE.BoxGeometry(.09,.10,.32),gun,.12,1.13,.20);
-   part(new THREE.BoxGeometry(.07,.06,.34),gun,.12,1.22,.92);
-   part(new THREE.BoxGeometry(.12,.20,.12),gun,.12,1.04,.34,.18);
-   return g;
-  }
-  model=makeLobbySoldier();
-  model.scale.setScalar(1.0);
-  model.position.set(0,0,0);
-  scene.add(model);
+ let last=performance.now();
   function resize(){const w=Math.max(1,canvas.clientWidth),h=Math.max(1,canvas.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
   new ResizeObserver(resize).observe(canvas);
-  function frame(now){requestAnimationFrame(frame);if(lobby.classList.contains('hidden'))return;const dt=Math.min(.05,(now-last)/1000);last=now;if(mixer)mixer.update(dt);lobbySoldier.rotation.y=Math.sin(now*.00045)*.13;if(model)model.visible=false;renderer.render(scene,camera)}
+  function frame(now){requestAnimationFrame(frame);if(lobby.classList.contains('hidden'))return;last=now;lobbySoldier.rotation.y=Math.sin(now*.00045)*.13;renderer.render(scene,camera)}
   requestAnimationFrame(frame);
  }catch(e){console.warn('Three.js indisponível; usando operador de reserva.',e)}
 })();
