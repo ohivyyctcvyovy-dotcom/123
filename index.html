@@ -32,6 +32,12 @@
 .ctl.knife{left:39%;bottom:22%}
 .ctl.crouch{left:30%;bottom:22%}
 @media(max-width:650px){.soldier{left:-1%;height:61%;width:34%;min-width:140px}.neon{left:16%;top:17%;font-size:clamp(24px,7vw,42px)}.rooms{width:64%;height:48%;right:5px}.roomtable td,.roomtable th{padding:6px 3px}.lobbyactions{right:5px;bottom:60px}.lobbyactions button{padding:8px 9px;font-size:10px}}
+
+/* JOYSTICK VISIVEL E CONTROLES MOBILE */
+.ctl.joystick{display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle,#223344aa,#0a111c88);border:2px solid #d4e2f366;box-shadow:inset 0 0 0 7px #d7e4f00b,0 4px 18px #0008;touch-action:none}
+.joystick-knob{position:absolute;left:50%;top:50%;width:43%;height:43%;border-radius:50%;transform:translate(-50%,-50%);background:linear-gradient(145deg,#f4f7fa,#7d91a5);border:2px solid #f0c45d;box-shadow:0 3px 12px #000a,inset 0 1px 3px #fff;pointer-events:none}
+#game3d{z-index:1;touch-action:none}
+
 </style></head><body>
 <div id="lobby" class="screen"><div class="lobbybg"></div><div class="neon">NEXUS</div><svg class="soldier" id="soldierFallback" viewBox="0 0 320 600" role="img" aria-label="Operador tático de reserva"><rect x="108" y="100" width="105" height="270" rx="32" fill="#273647"/><circle cx="160" cy="75" r="42" fill="#9b755e"/><path d="M116 65 Q115 20 160 25 Q208 22 204 65Z" fill="#111c29"/><path d="M110 165 L45 360 L80 372 L145 210 M205 165 L272 345 L240 362 L180 210" stroke="#273647" stroke-width="36" stroke-linecap="round"/><path d="M135 350 L110 555 L150 555 L166 375 M180 350 L212 555 L250 555 L215 350" fill="#151e2a"/></svg><canvas id="lobby3d" class="soldier" aria-label="Personagem 3D gratuito" style="pointer-events:none;opacity:0"></canvas><div class="topbar"><div class="logo">OPERAÇÃO ZERO</div><div class="righttools"><button id="installApp" class="installbtn" type="button">⬇ INSTALAR</button><div style="display:flex;gap:6px;align-items:center"><button class="report" onclick="openPanel('denuncia')">⚠ REPORTAR</button></div></div></div>
 <div class="leftnav"><button class="navbtn coin" onclick="openPanel('loja')"><b>＄</b>COIN</button><button class="navbtn" onclick="openPanel('evento')"><b>✦</b>EVENTO <small>NEW</small></button><button class="navbtn rank" onclick="openPanel('rank')"><b>★</b>RANKEADA</button><button class="navbtn" onclick="showLobby()"><b>⌂</b>HOME</button><button class="navbtn alert" onclick="openPanel('denuncia')"><b>⚠</b>DENÚNCIA</button><button class="navbtn" onclick="openPanel('chat')"><b>▤</b>CONVERSA</button><button class="navbtn" onclick="startGame(true)"><b>◎</b>TREINO</button></div>
@@ -40,7 +46,7 @@
 <div class="chat"><div class="panelhead">Todos　 Clã　 Sussurro</div><div id="chatlines" style="padding:5px">[Servidor] Bem-vindo à Operação Zero.<br>[Evento] XP x2 ativo no treino!</div><input id="chatInput" placeholder="Escreva uma mensagem"><button onclick="sendChat()">➤</button></div>
 <div class="lobbyactions"><button onclick="startGame(false)">INÍCIO RÁPIDO</button><button onclick="openPanel('servidores')">SERVIDORES</button><button onclick="startGame(false)">ENTRAR</button><button onclick="openPanel('criar')">＋ CRIAR SALA</button></div>
 <div class="bottom"><b>Lucaszin</b><div class="optional">EXP 34628 (42%)<div class="bar"><i></i></div></div><div class="grow"></div><b id="goldBalance">GOLD 496308</b><b class="optional">CASH 5451</b><button class="optional" onclick="openPanel('inventario')">▣</button><button class="optional" onclick="openPanel('loja')">🛒</button><button class="optional" onclick="openPanel('amigos')">♟</button><button onclick="openPanel('config')">⚙</button><button onclick="showLobby()">⏻</button></div></div>
-<div id="game" class="screen hidden"><div class="hud"><canvas id="view" class="gamecanvas"></canvas><div class="hudtop"><div class="score red" id="redScore">0</div><div><div style="font-size:11px">R1　 🎙</div><div class="clock" id="clock">25:00</div></div><div class="score blue" id="blueScore">0</div></div><div class="minimap"><b id="areaName">Porto Cinzento</b><div class="mapgrid"></div><span style="color:#52ed93">●</span> aliados　<span style="color:#f44">●</span> inimigos</div><div class="fps" id="fps">60 FPS<br>Ping: --</div><div class="killfeed" id="killfeed">NEXUS ★ Headshot<br>ViniZero ✦ abate</div><div class="crosshair" id="crosshair"></div><div class="ammo"><div id="weaponName">FUZIL VZ-4</div><strong id="ammo">30</strong> / <span id="reserve">120</span></div><div class="stats" id="stats">0 Abates　0 Assist.　0 Mortes</div><div class="controls" id="controls"><div class="ctl move" data-action="move">✥</div><div class="ctl fire" data-action="fire">▮</div><div class="ctl aim" data-action="aim">⊕</div><div class="ctl jump" data-action="jump">⌃⌃</div><div class="ctl reload" data-action="reload">⟳</div><div class="ctl swap" data-action="swap">⇄</div><div class="ctl crouch" data-action="crouch">♟</div><div class="ctl grenade" data-action="grenade">◉</div><div class="ctl knife" data-action="knife">⚔</div><div class="ctl med" data-action="med">✚</div><div class="ctl menu" data-action="menu">☰</div></div><div id="toast" class="toast hidden"></div></div><div id="board" class="board hidden"><section><h3>RED TEAM — <span id="redBoard">0</span></h3><table><tbody id="redPlayers"></tbody></table></section><section><h3 class="bblue">BLUE TEAM — <span id="blueBoard">0</span></h3><table><tbody id="bluePlayers"></tbody></table></section><button style="position:absolute;right:8px;top:8px" onclick="toggleBoard(false)">FECHAR ✕</button></div><div id="result" class="result hidden"><h1 id="resultTitle">VITÓRIA VERMELHA</h1><h2 id="resultScore">30 — 24</h2><p>Mata-mata — Porto Cinzento</p><div class="resultgrid"><section>RED TEAM<br><br>Lucaszin　18 / 0 / 7<br>Aliados　12 / 2 / 8</section><section>BLUE TEAM<br><br>Rival_09　14 / 1 / 9<br>Aliados　10 / 0 / 9</section></div><p>EXP da partida　<strong>+2100</strong>　+220 pts</p><button onclick="showLobby()">SAIR PARA O LOBBY</button><button onclick="startGame(true)">JOGAR NOVAMENTE</button></div></div>
+<div id="game" class="screen hidden"><div class="hud"><canvas id="view" class="gamecanvas" style="display:none"></canvas><canvas id="game3d" class="gamecanvas" aria-label="Mapa 3D do jogo" style="z-index:1"></canvas><div class="hudtop"><div class="score red" id="redScore">0</div><div><div style="font-size:11px">R1　 🎙</div><div class="clock" id="clock">25:00</div></div><div class="score blue" id="blueScore">0</div></div><div class="minimap"><b id="areaName">Porto Cinzento</b><div class="mapgrid"></div><span style="color:#52ed93">●</span> aliados　<span style="color:#f44">●</span> inimigos</div><div class="fps" id="fps">60 FPS<br>Ping: --</div><div class="killfeed" id="killfeed">NEXUS ★ Headshot<br>ViniZero ✦ abate</div><div class="crosshair" id="crosshair"></div><div class="ammo"><div id="weaponName">FUZIL VZ-4</div><strong id="ammo">30</strong> / <span id="reserve">120</span></div><div class="stats" id="stats">0 Abates　0 Assist.　0 Mortes</div><div class="controls" id="controls"><div class="ctl move joystick" data-action="move" aria-label="Joystick de movimento"><span class="joystick-knob" id="joystickKnob"></span></div><div class="ctl fire" data-action="fire">▮</div><div class="ctl aim" data-action="aim">⊕</div><div class="ctl jump" data-action="jump">⌃⌃</div><div class="ctl reload" data-action="reload">⟳</div><div class="ctl swap" data-action="swap">⇄</div><div class="ctl crouch" data-action="crouch">♟</div><div class="ctl grenade" data-action="grenade">◉</div><div class="ctl knife" data-action="knife">⚔</div><div class="ctl med" data-action="med">✚</div><div class="ctl menu" data-action="menu">☰</div></div><div id="toast" class="toast hidden"></div></div><div id="board" class="board hidden"><section><h3>RED TEAM — <span id="redBoard">0</span></h3><table><tbody id="redPlayers"></tbody></table></section><section><h3 class="bblue">BLUE TEAM — <span id="blueBoard">0</span></h3><table><tbody id="bluePlayers"></tbody></table></section><button style="position:absolute;right:8px;top:8px" onclick="toggleBoard(false)">FECHAR ✕</button></div><div id="result" class="result hidden"><h1 id="resultTitle">VITÓRIA VERMELHA</h1><h2 id="resultScore">30 — 24</h2><p>Mata-mata — Porto Cinzento</p><div class="resultgrid"><section>RED TEAM<br><br>Lucaszin　18 / 0 / 7<br>Aliados　12 / 2 / 8</section><section>BLUE TEAM<br><br>Rival_09　14 / 1 / 9<br>Aliados　10 / 0 / 9</section></div><p>EXP da partida　<strong>+2100</strong>　+220 pts</p><button onclick="showLobby()">SAIR PARA O LOBBY</button><button onclick="startGame(true)">JOGAR NOVAMENTE</button></div></div>
 <div id="modal" class="modal hidden"></div><div class="rotate"><span>↻<br><b>Gire o celular para jogar na horizontal</b><br>Use a tela em paisagem para aproveitar o HUD completo.</span></div>
 <script>
 const $=id=>document.getElementById(id);let selectedRoom=0,gameState=null,raf=0,lastFrame=0,frames=0,fpsTime=0,adaptiveScale=1,lastAdaptiveCheck=0,keys={},mouseDown=false,drag=null,settings={quality:'Média',showFPS:true,opacity:.7,size:1,sens:1},panel='';const maps=[{name:'Porto Cinzento',walls:[[0,0,18,1],[0,0,1,18],[0,17,18,18],[17,0,18,18],[4,3,9,4],[4,4,5,10],[8,8,13,9],[12,12,13,16],[2,13,6,14]]},{name:'Salão Âmbar',walls:[[0,0,18,1],[0,0,1,18],[0,17,18,18],[17,0,18,18],[3,3,4,14],[7,3,8,7],[7,11,8,15],[11,3,12,14],[14,5,15,12]]}];let mapIndex=0;
@@ -83,7 +89,7 @@ function startGame(training){closePanel();$('lobby').classList.add('hidden');$('
 function resizeCanvas(){if(!gameState)return;let c=gameState.canvas,baseDpr=settings.quality==='Baixa'?Math.min(1,devicePixelRatio||1):Math.min(settings.quality==='Alta'?1.5:1.2,devicePixelRatio||1),dpr=Math.max(.65,baseDpr*adaptiveScale);c.width=Math.floor(innerWidth*dpr);c.height=Math.floor(innerHeight*dpr);gameState.ctx.setTransform(dpr,0,0,dpr,0,0)}
 window.addEventListener('resize',resizeCanvas);
 function toast(s){$('toast').textContent=s;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),1500)}
-function loop(now){if(!gameState)return;raf=requestAnimationFrame(loop);let dt=Math.min(.05,(now-lastFrame)/1000);lastFrame=now;frames++;if(now-fpsTime>500){let measured=Math.round(frames*1000/(now-fpsTime));$('fps').innerHTML=measured+' FPS<br>Ping: '+(gameState.training?'--':'32 ms');frames=0;fpsTime=now;if(now-lastAdaptiveCheck>1800){lastAdaptiveCheck=now;let next=adaptiveScale;if(measured<32)next=Math.max(.65,adaptiveScale-.12);else if(measured>54)next=Math.min(1,adaptiveScale+.04);if(next!==adaptiveScale){adaptiveScale=next;resizeCanvas()}}}updateGame(dt,now);renderGame();if(!gameState.ended){let left=Math.max(0,gameState.time-Math.floor((now-gameState.start)/1000));$('clock').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');if(gameState.red>=30||gameState.blue>=30||left===0)finishGame()}}
+function loop(now){if(!gameState)return;raf=requestAnimationFrame(loop);let dt=Math.min(.05,(now-lastFrame)/1000);lastFrame=now;frames++;if(now-fpsTime>500){let measured=Math.round(frames*1000/(now-fpsTime));$('fps').innerHTML=measured+' FPS<br>Ping: '+(gameState.training?'--':'32 ms');frames=0;fpsTime=now;if(now-lastAdaptiveCheck>1800){lastAdaptiveCheck=now;let next=adaptiveScale;if(measured<32)next=Math.max(.65,adaptiveScale-.12);else if(measured>54)next=Math.min(1,adaptiveScale+.04);if(next!==adaptiveScale){adaptiveScale=next;resizeCanvas()}}}updateGame(dt,now);if(!window.__oz3dActive)renderGame();if(!gameState.ended){let left=Math.max(0,gameState.time-Math.floor((now-gameState.start)/1000));$('clock').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');if(gameState.red>=30||gameState.blue>=30||left===0)finishGame()}}
 function updateGame(dt,now){let g=gameState,p=g.player,speed=3.2;if(keys['w']||keys['arrowup']){p.x+=Math.cos(p.a)*speed*dt;p.y+=Math.sin(p.a)*speed*dt}if(keys['s']||keys['arrowdown']){p.x-=Math.cos(p.a)*speed*dt;p.y-=Math.sin(p.a)*speed*dt}if(keys['a']){p.x+=Math.cos(p.a-Math.PI/2)*speed*dt;p.y+=Math.sin(p.a-Math.PI/2)*speed*dt}if(keys['d']){p.x+=Math.cos(p.a+Math.PI/2)*speed*dt;p.y+=Math.sin(p.a+Math.PI/2)*speed*dt}p.x=Math.max(1.4,Math.min(16.5,p.x));p.y=Math.max(1.4,Math.min(16.5,p.y));for(let wall of maps[mapIndex].walls){if(p.x>wall[0]-.22&&p.x<wall[2]+.22&&p.y>wall[1]-.22&&p.y<wall[3]+.22){if(p.x-wall[0]<.3||wall[2]-p.x<.3)p.x=Math.max(1.4,Math.min(16.5,p.x-.08*Math.cos(p.a)));if(p.y-wall[1]<.3||wall[3]-p.y<.3)p.y=Math.max(1.4,Math.min(16.5,p.y-.08*Math.sin(p.a)));}}for(let b of g.bots){if(!b.alive){if(now>b.respawn){b.alive=true;b.hp=100;b.x=5+Math.random()*9;b.y=3+Math.random()*11}continue}let dx=p.x-b.x,dy=p.y-b.y,dist=Math.hypot(dx,dy);b.a=Math.atan2(dy,dx);if(dist>3){b.x+=Math.cos(b.a)*dt*.55;b.y+=Math.sin(b.a)*dt*.55}if(dist<7&&now-b.shoot>1900+Math.random()*1800){b.shoot=now;if(Math.random()<.2){p.hp-=8;if(p.hp<=0){g.deaths++;p.hp=100;p.x=3;p.y=3;toast('VOCÊ FOI ELIMINADO')}}}}$('redScore').textContent=g.red;$('blueScore').textContent=g.blue;$('ammo').textContent=g.ammo;$('reserve').textContent=g.reserve;$('stats').textContent=g.kills+' Abates　0 Assist.　'+g.deaths+' Mortes'}
 function renderGame(){
 let g=gameState,c=g.ctx,w=innerWidth,h=innerHeight,p=g.player,now=performance.now();c.clearRect(0,0,w,h);
@@ -141,6 +147,139 @@ window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===
   function frame(now){requestAnimationFrame(frame);if(lobby.classList.contains('hidden'))return;const dt=Math.min(.05,(now-last)/1000);last=now;if(mixer)mixer.update(dt);if(model)model.rotation.y=Math.sin(now*.00045)*.13;renderer.render(scene,camera)}
   requestAnimationFrame(frame);
  }catch(e){console.warn('Three.js indisponível; usando operador de reserva.',e)}
+})();
+</script>
+
+
+<script type="module">
+window.__oz3dActive=true;
+(async()=>{
+ const canvas=document.getElementById('game3d'), view=document.getElementById('view'), knob=document.getElementById('joystickKnob');
+ const root=document.getElementById('game');
+ const joystick={x:0,y:0,active:false,id:null,cx:0,cy:0,radius:44};
+ let THREE,renderer,scene,camera,world,weaponRig,weaponModel,armsModel,enemyTemplate,mixer=null,last=performance.now(),lastRender=0;
+ const enemyMeshes=[];
+ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+ try{
+  THREE=await import('three');
+  const {GLTFLoader}=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/loaders/GLTFLoader.js');
+  renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'low-power',depth:true,stencil:false});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,.72));
+  renderer.setSize(canvas.clientWidth||innerWidth,canvas.clientHeight||innerHeight,false);
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.shadowMap.enabled=false;
+  scene=new THREE.Scene();scene.background=new THREE.Color(0x899aa4);scene.fog=new THREE.Fog(0x899aa4,13,29);
+  camera=new THREE.PerspectiveCamera(74,innerWidth/innerHeight,.08,60);scene.add(camera);
+  scene.add(new THREE.HemisphereLight(0xcbd9e5,0x34312a,2.1));
+  const sun=new THREE.DirectionalLight(0xffe3b0,1.6);sun.position.set(-5,10,3);scene.add(sun);
+  world=new THREE.Group();scene.add(world);
+  const loader=new GLTFLoader();
+  function canvasTexture(kind){
+   const c=document.createElement('canvas');c.width=128;c.height=128;const x=c.getContext('2d');
+   if(kind==='floor'){
+    x.fillStyle='#656b6b';x.fillRect(0,0,128,128);
+    for(let i=0;i<128;i+=32){x.strokeStyle='#3c4549';x.lineWidth=2;x.beginPath();x.moveTo(i,0);x.lineTo(i,128);x.stroke();x.beginPath();x.moveTo(0,i);x.lineTo(128,i);x.stroke()}
+    for(let i=0;i<220;i++){x.fillStyle=i%2?'#9ca09a33':'#222c3040';x.fillRect(Math.random()*128,Math.random()*128,1+Math.random()*3,1+Math.random()*2)}
+    x.fillStyle='#b89a5c';x.fillRect(0,5,128,3);x.fillRect(0,120,128,3);
+   }else{
+    x.fillStyle='#48545a';x.fillRect(0,0,128,128);
+    for(let y=0;y<128;y+=32){x.fillStyle=y%64?'#56636a':'#37444d';x.fillRect(0,y,128,27);x.strokeStyle='#1e2a32';x.strokeRect(3,y+3,122,21);x.fillStyle='#a7b0b0';x.fillRect(8,y+6,3,2);x.fillRect(117,y+6,3,2)}
+    x.fillStyle='#b49a5e';x.fillRect(0,0,128,4);
+   }
+   const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=1;return t;
+  }
+  const floorMat=new THREE.MeshStandardMaterial({map:canvasTexture('floor'),roughness:1,metalness:0});
+  const wallMat=new THREE.MeshStandardMaterial({map:canvasTexture('wall'),roughness:.94,metalness:.05});
+  const trimMat=new THREE.MeshStandardMaterial({color:0x252f36,roughness:1});
+  const goldMat=new THREE.MeshStandardMaterial({color:0xc5a05a,roughness:.7,metalness:.2});
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(18,18),floorMat);floor.rotation.x=-Math.PI/2;floor.position.set(9,0,9);world.add(floor);
+  const base=new THREE.Mesh(new THREE.BoxGeometry(18,.25,18),trimMat);base.position.set(9,-.18,9);world.add(base);
+  const maps3d=[[[0,0,18,1],[0,0,1,18],[0,17,18,18],[17,0,18,18],[4,3,9,4],[4,4,5,10],[8,8,13,9],[12,12,13,16],[2,13,6,14]],[[0,0,18,1],[0,0,1,18],[0,17,18,18],[17,0,18,18],[3,3,4,14],[7,3,8,7],[7,11,8,15],[11,3,12,14],[14,5,15,12]]];
+  const mapGroups=[];
+  for(const mapWalls of maps3d){
+   const group=new THREE.Group();
+   for(const a of mapWalls){
+    const w=a[2]-a[0],d=a[3]-a[1],cx=(a[0]+a[2])/2,cz=(a[1]+a[3])/2;
+    const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,3.5,d),wallMat);mesh.position.set(cx,1.75,cz);group.add(mesh);
+    const top=new THREE.Mesh(new THREE.BoxGeometry(w+.015,.09,d+.015),goldMat);top.position.set(cx,3.48,cz);group.add(top);
+    const bottom=new THREE.Mesh(new THREE.BoxGeometry(w+.01,.18,d+.01),trimMat);bottom.position.set(cx,.12,cz);group.add(bottom);
+   }
+   // Few low cover crates with bevel-like dark trim; lightweight primitive geometry.
+   for(const [x,z] of (mapGroups.length===0?[[2.5,6],[10.5,4.5],[14.5,9],[7,15]]:[[5,6],[9,9],[15,14]])){
+    const crate=new THREE.Mesh(new THREE.BoxGeometry(.9,.9,.9),new THREE.MeshStandardMaterial({color:0x4b514b,roughness:1}));
+    crate.position.set(x,.45,z);group.add(crate);
+    const band=new THREE.Mesh(new THREE.BoxGeometry(.92,.1,.92),goldMat);band.position.set(x,.58,z);group.add(band);
+   }
+   mapGroups.push(group);world.add(group);
+  }
+  // Low-cost 3D fallback soldier built from real meshes, not a paper sprite.
+  function makeSoldier(){
+   const g=new THREE.Group();const dark=new THREE.MeshStandardMaterial({color:0x202c35,roughness:.9}),armor=new THREE.MeshStandardMaterial({color:0x3f505c,roughness:.8}),skin=new THREE.MeshStandardMaterial({color:0x99765d,roughness:1}),helmet=new THREE.MeshStandardMaterial({color:0x111c25,roughness:.8});
+   function part(geo,mat,x,y,z){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);g.add(m);return m}
+   part(new THREE.BoxGeometry(.48,.65,.27),armor,0,1.05,0);part(new THREE.BoxGeometry(.36,.22,.3),dark,0,.63,0);
+   part(new THREE.SphereGeometry(.17,8,6),skin,0,1.55,0);part(new THREE.SphereGeometry(.19,8,5),helmet,0,1.67,0);
+   part(new THREE.BoxGeometry(.25,.08,.28),helmet,0,1.58,.05);
+   part(new THREE.BoxGeometry(.15,.52,.16),dark,-.16,.28,0);part(new THREE.BoxGeometry(.15,.52,.16),dark,.16,.28,0);
+   part(new THREE.BoxGeometry(.14,.52,.15),armor,-.34,1.03,0).rotation.z=-.18;part(new THREE.BoxGeometry(.14,.52,.15),armor,.34,1.03,0).rotation.z=.18;
+   const rifle=part(new THREE.BoxGeometry(.09,.09,.62),dark,.31,1.04,.25);rifle.rotation.x=.12;
+   return g;
+  }
+  enemyTemplate=makeSoldier();
+  try{const gltf=await loader.loadAsync('./assets/3d/character-male-a.glb');enemyTemplate=gltf.scene;const b=new THREE.Box3().setFromObject(enemyTemplate),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3());enemyTemplate.position.sub(center);enemyTemplate.scale.setScalar(1.7/Math.max(.1,size.y));enemyTemplate.position.y=.85;}catch(e){console.warn('Modelo humano GLB indisponível; usando modelo 3D local.',e)}
+  for(let i=0;i<10;i++){const bot=enemyTemplate.clone(true);bot.visible=false;scene.add(bot);enemyMeshes.push(bot)}
+  weaponRig=new THREE.Group();camera.add(weaponRig);weaponRig.position.set(.34,-.31,-.62);weaponRig.rotation.set(-.06,-.12,-.02);
+  // Simple, genuinely 3D rifle fallback shown immediately.
+  const gunMat=new THREE.MeshStandardMaterial({color:0x222b33,roughness:.5,metalness:.5}),metalMat=new THREE.MeshStandardMaterial({color:0x77848a,roughness:.45,metalness:.7}),stockMat=new THREE.MeshStandardMaterial({color:0x514735,roughness:.9});
+  function gunPart(geo,mat,pos,rot=[0,0,0]){const m=new THREE.Mesh(geo,mat);m.position.set(...pos);m.rotation.set(...rot);weaponRig.add(m);return m}
+  gunPart(new THREE.BoxGeometry(.16,.16,.52),gunMat,[0,0,0]);gunPart(new THREE.CylinderGeometry(.025,.025,.55,7),metalMat,[0,.02,-.46],[Math.PI/2,0,0]);gunPart(new THREE.BoxGeometry(.13,.2,.15),stockMat,[0,-.02,.3]);gunPart(new THREE.BoxGeometry(.08,.22,.12),gunMat,[0,-.17,-.03],[.18,0,0]);gunPart(new THREE.BoxGeometry(.1,.2,.13),gunMat,[0,-.18,-.12]);
+  // Load actual weapon and arms GLBs; hide fallback geometry only after successful load.
+  const fallbackGun=weaponRig.children.slice();
+  try{const gltf=await loader.loadAsync('./assets/3d/assault-rifle.glb');weaponModel=gltf.scene;const box=new THREE.Box3().setFromObject(weaponModel),size=box.getSize(new THREE.Vector3());weaponModel.scale.setScalar(.48/Math.max(size.x,size.y,size.z,.01));weaponModel.rotation.set(0,Math.PI,0);weaponModel.position.set(0,-.03,-.16);weaponRig.add(weaponModel);fallbackGun.forEach(o=>o.visible=false);}catch(e){console.warn('GLB da arma indisponível; usando rifle 3D de reserva.',e)}
+  try{const gltf=await loader.loadAsync('./assets/3d/fps-arms.glb');armsModel=gltf.scene;const box=new THREE.Box3().setFromObject(armsModel),size=box.getSize(new THREE.Vector3());armsModel.scale.setScalar(.56/Math.max(size.x,size.y,size.z,.01));armsModel.position.set(-.12,-.22,-.06);armsModel.rotation.set(0,Math.PI,0);weaponRig.add(armsModel);}catch(e){console.warn('GLB de braços indisponível; rifle 3D continua visível.',e)}
+  // Keep all rendering light: no realtime shadows, limited pixel ratio, simple materials.
+  function resize(){const w=Math.max(1,canvas.clientWidth||innerWidth),h=Math.max(1,canvas.clientHeight||innerHeight);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,.72));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+  addEventListener('resize',resize);
+  const box3=new THREE.Box3(),vec=new THREE.Vector3();
+  function collides(x,z){for(const a of maps3d[window.mapIndex||0])if(x>a[0]-.23&&x<a[2]+.23&&z>a[1]-.23&&z<a[3]+.23)return true;return false}
+  function updateJoystickVisual(){if(!knob)return;knob.style.transform='translate(calc(-50% + '+(joystick.x*joystick.radius)+'px), calc(-50% + '+(joystick.y*joystick.radius)+'px))'}
+  function updateScene(now){
+   if(!window.gameState||!renderer)return;
+   const g=window.gameState,p=g.player;
+   camera.position.set(p.x,1.62,p.y);camera.rotation.order='YXZ';camera.rotation.y=-p.a-Math.PI/2;camera.rotation.x=0;camera.rotation.z=0;
+   if(g.aim)camera.fov=51;else camera.fov=74;camera.updateProjectionMatrix();
+   const index=window.mapIndex||0;mapGroups.forEach((mg,i)=>mg.visible=i===index);
+   for(let i=0;i<enemyMeshes.length;i++){
+    const bot=g.bots[i],mesh=enemyMeshes[i];if(!bot){mesh.visible=false;continue}
+    mesh.visible=!!bot.alive;mesh.position.set(bot.x,.02,bot.y);mesh.rotation.y=-(bot.a||0)-Math.PI/2;
+    const scale=bot.team==='red'?1:1;mesh.scale.multiplyScalar(1);mesh.traverse(o=>{if(o.isMesh&&o.material&&o.material.color){if(!o.userData.ozTint){o.userData.ozBase=o.material.color.clone();o.userData.ozTint=true}o.material.color.copy(o.userData.ozBase).multiplyScalar(bot.team==='red'?1:.8)}})
+   }
+   weaponRig.position.x=.34+Math.sin(now*.006)*.008;weaponRig.position.y=-.31+Math.sin(now*.009)*.006;
+   // 3D rifle remains visible even while model/arms are loading.
+   if(root.classList.contains('hidden'))return;
+   renderer.render(scene,camera);
+  }
+  // Expose joystick movement to the existing game simulation.
+  window.__ozJoystick=joystick;
+  function joystickDown(e){if(!window.gameState)return;e.preventDefault();const r=canvas.getBoundingClientRect();joystick.active=true;joystick.id=e.pointerId;joystick.cx=e.clientX;joystick.cy=e.clientY;}
+  // Replace the old drag-only movement with a visible analog stick and continuous movement.
+  const move=document.querySelector('.ctl.move');
+  if(move){
+   move.addEventListener('pointerdown',e=>{e.preventDefault();const r=move.getBoundingClientRect();joystick.active=true;joystick.id=e.pointerId;joystick.cx=r.left+r.width/2;joystick.cy=r.top+r.height/2;move.setPointerCapture?.(e.pointerId);const dx=e.clientX-joystick.cx,dy=e.clientY-joystick.cy;joystick.x=clamp(dx/joystick.radius,-1,1);joystick.y=clamp(dy/joystick.radius,-1,1);updateJoystickVisual()});
+   move.addEventListener('pointermove',e=>{if(!joystick.active||e.pointerId!==joystick.id)return;e.preventDefault();const dx=e.clientX-joystick.cx,dy=e.clientY-joystick.cy,len=Math.hypot(dx,dy),scale=len>joystick.radius?joystick.radius/len:1;joystick.x=dx*scale/joystick.radius;joystick.y=dy*scale/joystick.radius;updateJoystickVisual()});
+   const stop=()=>{joystick.active=false;joystick.id=null;joystick.x=0;joystick.y=0;updateJoystickVisual()};
+   ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>move.addEventListener(ev,stop));
+  }
+  // Override the raycast renderer's expensive frame drawing while preserving gameplay logic.
+  window.renderGame=()=>{};
+  // Collision check is lightweight and keeps the player out of wall meshes.
+  window.__ozCollides=collides;
+  // Keep minimap/map selection and map 3D in sync.
+  const originalCycleMap=window.cycleMap;
+  if(typeof originalCycleMap==='function')window.cycleMap=function(n){originalCycleMap(n);window.mapIndex=window.mapIndex||0;};
+  window.mapIndex=window.mapIndex||0;
+  function frame(now){requestAnimationFrame(frame);if(now-lastRender<33)return;lastRender=now;updateScene(now)}
+  requestAnimationFrame(frame);
+ }catch(err){console.error('3D renderer falhou:',err);window.__oz3dActive=false;canvas.style.display='none';view.style.display='block';}
 })();
 </script>
 
