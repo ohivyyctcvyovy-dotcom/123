@@ -146,6 +146,33 @@ window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===
   const key=new THREE.DirectionalLight(0xffdca0,2.1);key.position.set(-3,5,4);scene.add(key);
   const camera=new THREE.PerspectiveCamera(38,Math.max(.1,canvas.clientWidth/canvas.clientHeight),.1,100);camera.position.set(0,1.45,6.4);camera.lookAt(0,1.15,0);
   const loader=new GLTFLoader();
+  // Personagem militar 3D original feito com malhas Three.js gratuitas, sem imagem plana.
+  function makeLobbySoldier(){
+   const g=new THREE.Group();
+   const mat=(color,roughness=.9,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+   const uniform=mat(0x4a5942),dark=mat(0x202820),vest=mat(0x303b30),skin=mat(0x9a7558),helmet=mat(0x35432f),boot=mat(0x171b17),rifle=mat(0x171d20,.55,.4),gold=mat(0xb99a51,.6,.25);
+   function part(geo,m,x,y,z,rx=0,ry=0,rz=0){const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);o.rotation.set(rx,ry,rz);g.add(o);return o}
+   // boots, legs, torso, armored vest, neck and head
+   part(new THREE.BoxGeometry(.22,.14,.31),boot,-.17,.12,0);part(new THREE.BoxGeometry(.22,.14,.31),boot,.17,.12,0);
+   part(new THREE.CapsuleGeometry(.115,.53,3,7),uniform,-.17,.47,0,0,0,-.035);part(new THREE.CapsuleGeometry(.115,.53,3,7),uniform,.17,.47,0,0,0,.035);
+   part(new THREE.BoxGeometry(.52,.62,.29),uniform,0,1.02,0);
+   part(new THREE.BoxGeometry(.48,.48,.32),vest,0,1.08,-.025);
+   part(new THREE.BoxGeometry(.14,.23,.035),dark,-.17,1.08,-.19);part(new THREE.BoxGeometry(.14,.23,.035),dark,0,1.08,-.19);part(new THREE.BoxGeometry(.14,.23,.035),dark,.17,1.08,-.19);
+   for(let i=0;i<3;i++){part(new THREE.BoxGeometry(.09,.035,.02),gold,-.17+i*.17,1.2,-.214)}
+   part(new THREE.CylinderGeometry(.07,.08,.12,8),skin,0,1.39,0);
+   part(new THREE.SphereGeometry(.16,10,8),skin,0,1.55,0);
+   part(new THREE.SphereGeometry(.19,10,7),helmet,0,1.68,0);
+   part(new THREE.BoxGeometry(.4,.055,.23),helmet,0,1.59,-.035);
+   part(new THREE.BoxGeometry(.15,.42,.16),uniform,-.34,1.03,0,0,0,-.16);part(new THREE.BoxGeometry(.15,.42,.16),uniform,.34,1.03,0,0,0,.16);
+   part(new THREE.SphereGeometry(.09,8,6),dark,-.39,.81,-.01);part(new THREE.SphereGeometry(.09,8,6),dark,.39,.81,-.01);
+   // rifle across the chest
+   part(new THREE.BoxGeometry(.09,.09,.66),rifle,.17,.88,-.19,.22,0,0);
+   part(new THREE.BoxGeometry(.12,.13,.2),dark,.16,.81,-.03,.22,0,0);
+   part(new THREE.BoxGeometry(.04,.05,.14),gold,.17,.94,-.23,.22,0,0);
+   g.scale.setScalar(1.15);return g;
+  }
+  const lobbySoldier=makeLobbySoldier();lobbySoldier.position.set(0,0,0);scene.add(lobbySoldier);
+  if(fallback)fallback.style.opacity='0';canvas.style.opacity='1';
   // Lobby renderer is independent from the gameplay joystick.
   // Replace the old drag-only movement with a visible analog stick and continuous movement.
   const move=document.querySelector('.ctl.move');
@@ -172,7 +199,7 @@ window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===
   },undefined,err=>console.warn('Modelo 3D do lobby não carregou; mantendo reserva SVG.',err));
   function resize(){const w=Math.max(1,canvas.clientWidth),h=Math.max(1,canvas.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
   new ResizeObserver(resize).observe(canvas);
-  function frame(now){requestAnimationFrame(frame);if(lobby.classList.contains('hidden'))return;const dt=Math.min(.05,(now-last)/1000);last=now;if(mixer)mixer.update(dt);if(model)model.rotation.y=Math.sin(now*.00045)*.13;renderer.render(scene,camera)}
+  function frame(now){requestAnimationFrame(frame);if(lobby.classList.contains('hidden'))return;const dt=Math.min(.05,(now-last)/1000);last=now;if(mixer)mixer.update(dt);lobbySoldier.rotation.y=Math.sin(now*.00045)*.13;if(model)model.visible=false;renderer.render(scene,camera)}
   requestAnimationFrame(frame);
  }catch(e){console.warn('Three.js indisponível; usando operador de reserva.',e)}
 })();
