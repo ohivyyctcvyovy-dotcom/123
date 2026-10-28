@@ -1,4 +1,4 @@
-const CACHE = 'operacao-zero-v15';
+const CACHE = 'operacao-zero-v16';
 const FILES = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', event => {
