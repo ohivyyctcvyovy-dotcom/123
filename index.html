@@ -24,8 +24,6 @@
 .ctl{backdrop-filter:blur(3px);box-shadow:0 4px 14px #0005}
 .ctl.fire{left:auto;right:5%;top:auto;bottom:21%;width:clamp(76px,12vw,118px);height:clamp(76px,12vw,118px);background:#b52d3444;border-color:#ff8b8b99;font-size:32px}
 .ctl.aim{right:17%;top:auto;bottom:31%;width:clamp(58px,9vw,90px);height:clamp(58px,9vw,90px)}
-.ctl.turnleft{left:auto;right:27%;top:auto;bottom:43%;width:clamp(44px,7vw,64px);height:clamp(44px,7vw,64px);font-size:26px;background:#172637bb}
-.ctl.turnright{left:auto;right:5%;top:auto;bottom:43%;width:clamp(44px,7vw,64px);height:clamp(44px,7vw,64px);font-size:26px;background:#172637bb}
 .ctl.move{left:4%;bottom:8%;background:#c8d9ec18}
 .ctl.reload{right:18%;bottom:7%}
 .ctl.swap{right:31%;left:auto;bottom:7%}
@@ -52,7 +50,7 @@
 <div class="chat"><div class="panelhead">Todos　 Clã　 Sussurro</div><div id="chatlines" style="padding:5px">[Servidor] Bem-vindo à Operação Zero.<br>[Evento] XP x2 ativo no treino!</div><input id="chatInput" placeholder="Escreva uma mensagem"><button onclick="sendChat()">➤</button></div>
 <div class="lobbyactions"><button onclick="startGame(false)">INÍCIO RÁPIDO</button><button onclick="openPanel('servidores')">SERVIDORES</button><button onclick="startGame(false)">ENTRAR</button><button onclick="openPanel('criar')">＋ CRIAR SALA</button></div>
 <div class="bottom"><b>Lucaszin</b><div class="optional">EXP 34628 (42%)<div class="bar"><i></i></div></div><div class="grow"></div><b id="goldBalance">GOLD 496308</b><b class="optional">CASH 5451</b><button class="optional" onclick="openPanel('inventario')">▣</button><button class="optional" onclick="openPanel('loja')">🛒</button><button class="optional" onclick="openPanel('amigos')">♟</button><button onclick="openPanel('config')">⚙</button><button onclick="showLobby()">⏻</button></div></div>
-<div id="game" class="screen hidden"><div class="hud"><canvas id="view" class="gamecanvas" style="display:none"></canvas><canvas id="game3d" class="gamecanvas" aria-label="Mapa 3D do jogo" style="z-index:1"></canvas><div class="hudtop"><div class="score red" id="redScore">0</div><div><div style="font-size:11px">R1　 🎙</div><div class="clock" id="clock">25:00</div></div><div class="score blue" id="blueScore">0</div></div><div class="minimap"><b id="areaName">Porto Cinzento</b><div class="mapgrid"></div><span style="color:#52ed93">●</span> aliados　<span style="color:#f44">●</span> inimigos</div><div class="fps" id="fps">60 FPS<br>Ping: --</div><div class="killfeed" id="killfeed">NEXUS ★ Headshot<br>ViniZero ✦ abate</div><div class="crosshair" id="crosshair"></div><div class="ammo"><div id="weaponName">FUZIL VZ-4</div><strong id="ammo">30</strong> / <span id="reserve">120</span></div><div class="stats" id="stats">0 Abates　0 Assist.　0 Mortes</div><div class="controls" id="controls"><div class="ctl move joystick" data-action="move" aria-label="Joystick de movimento"><span class="joystick-knob" id="joystickKnob"></span></div><div class="ctl fire" data-action="fire">▮</div><div class="ctl aim" data-action="aim">⊕</div><div class="ctl turnleft" data-action="turnleft" aria-label="Virar para a esquerda">↶</div><div class="ctl turnright" data-action="turnright" aria-label="Virar para a direita">↷</div><div class="ctl jump" data-action="jump">⌃⌃</div><div class="ctl reload" data-action="reload">⟳</div><div class="ctl swap" data-action="swap">⇄</div><div class="ctl crouch" data-action="crouch">♟</div><div class="ctl grenade" data-action="grenade">◉</div><div class="ctl knife" data-action="knife">⚔</div><div class="ctl med" data-action="med">✚</div><div class="ctl menu" data-action="menu">☰</div></div><div id="toast" class="toast hidden"></div></div><div id="board" class="board hidden"><section><h3>RED TEAM — <span id="redBoard">0</span></h3><table><tbody id="redPlayers"></tbody></table></section><section><h3 class="bblue">BLUE TEAM — <span id="blueBoard">0</span></h3><table><tbody id="bluePlayers"></tbody></table></section><button style="position:absolute;right:8px;top:8px" onclick="toggleBoard(false)">FECHAR ✕</button></div><div id="result" class="result hidden"><h1 id="resultTitle">VITÓRIA VERMELHA</h1><h2 id="resultScore">30 — 24</h2><p>Mata-mata — Porto Cinzento</p><div class="resultgrid"><section>RED TEAM<br><br>Lucaszin　18 / 0 / 7<br>Aliados　12 / 2 / 8</section><section>BLUE TEAM<br><br>Rival_09　14 / 1 / 9<br>Aliados　10 / 0 / 9</section></div><p>EXP da partida　<strong>+2100</strong>　+220 pts</p><button onclick="showLobby()">SAIR PARA O LOBBY</button><button onclick="startGame(true)">JOGAR NOVAMENTE</button></div></div>
+<div id="game" class="screen hidden"><div class="hud"><canvas id="view" class="gamecanvas" style="display:none"></canvas><canvas id="game3d" class="gamecanvas" aria-label="Mapa 3D do jogo" style="z-index:1"></canvas><div class="hudtop"><div class="score red" id="redScore">0</div><div><div style="font-size:11px">R1　 🎙</div><div class="clock" id="clock">25:00</div></div><div class="score blue" id="blueScore">0</div></div><div class="minimap"><b id="areaName">Porto Cinzento</b><div class="mapgrid"></div><span style="color:#52ed93">●</span> aliados　<span style="color:#f44">●</span> inimigos</div><div class="fps" id="fps">60 FPS<br>Ping: --</div><div class="killfeed" id="killfeed">NEXUS ★ Headshot<br>ViniZero ✦ abate</div><div class="crosshair" id="crosshair"></div><div class="ammo"><div id="weaponName">FUZIL VZ-4</div><strong id="ammo">30</strong> / <span id="reserve">120</span></div><div class="stats" id="stats">0 Abates　0 Assist.　0 Mortes</div><div class="controls" id="controls"><div class="ctl move joystick" data-action="move" aria-label="Joystick de movimento"><span class="joystick-knob" id="joystickKnob"></span></div><div class="ctl fire" data-action="fire">▮</div><div class="ctl aim" data-action="aim">⊕</div><div class="ctl jump" data-action="jump">⌃⌃</div><div class="ctl reload" data-action="reload">⟳</div><div class="ctl swap" data-action="swap">⇄</div><div class="ctl crouch" data-action="crouch">♟</div><div class="ctl grenade" data-action="grenade">◉</div><div class="ctl knife" data-action="knife">⚔</div><div class="ctl med" data-action="med">✚</div><div class="ctl menu" data-action="menu">☰</div></div><div id="toast" class="toast hidden"></div></div><div id="board" class="board hidden"><section><h3>RED TEAM — <span id="redBoard">0</span></h3><table><tbody id="redPlayers"></tbody></table></section><section><h3 class="bblue">BLUE TEAM — <span id="blueBoard">0</span></h3><table><tbody id="bluePlayers"></tbody></table></section><button style="position:absolute;right:8px;top:8px" onclick="toggleBoard(false)">FECHAR ✕</button></div><div id="result" class="result hidden"><h1 id="resultTitle">VITÓRIA VERMELHA</h1><h2 id="resultScore">30 — 24</h2><p>Mata-mata — Porto Cinzento</p><div class="resultgrid"><section>RED TEAM<br><br>Lucaszin　18 / 0 / 7<br>Aliados　12 / 2 / 8</section><section>BLUE TEAM<br><br>Rival_09　14 / 1 / 9<br>Aliados　10 / 0 / 9</section></div><p>EXP da partida　<strong>+2100</strong>　+220 pts</p><button onclick="showLobby()">SAIR PARA O LOBBY</button><button onclick="startGame(true)">JOGAR NOVAMENTE</button></div></div>
 <div id="modal" class="modal hidden"></div><div class="rotate"><span>↻<br><b>Gire o celular para jogar na horizontal</b><br>Use a tela em paisagem para aproveitar o HUD completo.</span></div>
 <script>
 const $=id=>document.getElementById(id);let selectedRoom=0,gameState=null,raf=0,lastFrame=0,frames=0,fpsTime=0,adaptiveScale=1,lastAdaptiveCheck=0,keys={},mouseDown=false,drag=null,settings={quality:'Média',showFPS:true,opacity:.7,size:1,sens:1},panel='';const maps=[{name:'Porto Cinzento',walls:[[0,0,18,1],[0,0,1,18],[0,17,18,18],[17,0,18,18],[4,3,9,4],[4,4,5,10],[8,8,13,9],[12,12,13,16],[2,13,6,14]]},{name:'Salão Âmbar',walls:[[0,0,18,1],[0,0,1,18],[0,17,18,18],[17,0,18,18],[3,3,4,14],[7,3,8,7],[7,11,8,15],[11,3,12,14],[14,5,15,12]]}];let mapIndex=0;
@@ -127,7 +125,61 @@ function reload(){let g=gameState;if(!g||g.reserve<=0||g.reloadAt)return;playGam
 function finishGame(){let g=gameState;if(g.ended)return;g.ended=true;$('result').classList.remove('hidden');$('resultTitle').textContent=g.red>=g.blue?'VITÓRIA VERMELHA':'VITÓRIA AZUL';$('resultScore').textContent=g.red+' — '+g.blue}
 function toggleBoard(v){$('board').classList.toggle('hidden',v===false);if(v){let g=gameState;$('redBoard').textContent=g.red;$('blueBoard').textContent=g.blue;$('redPlayers').innerHTML='<tr><td>1　Lucaszin</td><td>'+g.kills+'</td><td>'+g.deaths+'</td><td>▮▮▮</td></tr><tr><td>2　Nanda_R</td><td>8</td><td>4</td><td>▮▮</td></tr>';$('bluePlayers').innerHTML='<tr><td>1　Rival_09</td><td>7</td><td>5</td><td>▮▮▮</td></tr><tr><td>2　Rival_22</td><td>4</td><td>8</td><td>▮</td></tr>'}}
 function action(a){if(!gameState)return;if(a==='fire')shoot();if(a==='reload')reload();if(a==='aim'){gameState.aim=!gameState.aim;$('crosshair').style.opacity=gameState.aim?'.3':'1'}if(a==='turnleft')gameState.player.a-=.22;if(a==='turnright')gameState.player.a+=.22;if(a==='swap'){gameState.ammo=30;$('weaponName').textContent='PISTOLA PX-9'}if(a==='grenade')toast('GRANADA PREPARADA');if(a==='med'){gameState.player.hp=Math.min(100,gameState.player.hp+30);toast('KIT MÉDICO +30')}if(a==='knife')toast('FACA DE CAMPO');if(a==='jump')toast('PULO');if(a==='crouch')toast('AGACHADO');if(a==='menu')openPanel('config')}
-document.querySelectorAll('.ctl').forEach(el=>{let a=el.dataset.action;el.addEventListener('pointerdown',e=>{e.preventDefault();el.setPointerCapture?.(e.pointerId);if(a==='move'){if(!window.__oz3dActive)drag={id:e.pointerId,x:e.clientX,y:e.clientY}}else if(a==='fire'){mouseDown=true;shoot()}else action(a)});el.addEventListener('pointermove',e=>{if(drag&&drag.id===e.pointerId&&gameState){let dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(a==='move'){let step=-dy*.025*settings.sens;gameState.player.x=Math.max(1.3,Math.min(16.7,gameState.player.x+Math.cos(gameState.player.a)*step));gameState.player.y=Math.max(1.3,Math.min(16.7,gameState.player.y+Math.sin(gameState.player.a)*step));gameState.player.a+=dx*.008*settings.sens}else{gameState.player.a+=dx*.008*settings.sens}drag.x=e.clientX;drag.y=e.clientY}});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,()=>{if(drag&&drag.id!==undefined)drag=null;mouseDown=false}))});
+// Mobile FPS controls: left stick walks; right-side finger swipe turns the camera.
+const moveControl=document.querySelector('.ctl.move');
+const knob=document.getElementById('joystickKnob');
+const stick={x:0,y:0,active:false,id:null,cx:0,cy:0,radius:48};
+window.__ozJoystick=stick;
+function drawStick(){if(knob)knob.style.transform='translate(calc(-50% + '+(stick.x*stick.radius)+'px), calc(-50% + '+(stick.y*stick.radius)+'px))'}
+function updateStick(e){
+ const dx=e.clientX-stick.cx,dy=e.clientY-stick.cy,len=Math.hypot(dx,dy),factor=len>stick.radius?stick.radius/len:1;
+ stick.x=Math.max(-1,Math.min(1,dx*factor/stick.radius));
+ stick.y=Math.max(-1,Math.min(1,dy*factor/stick.radius));
+ drawStick();
+}
+function stopStick(e){
+ if(e&&stick.id!==null&&e.pointerId!==undefined&&e.pointerId!==stick.id)return;
+ stick.active=false;stick.id=null;stick.x=0;stick.y=0;drawStick();
+}
+if(moveControl){
+ moveControl.addEventListener('pointerdown',e=>{
+  if(!window.gameState)return;
+  e.preventDefault();e.stopPropagation();
+  const r=moveControl.getBoundingClientRect();
+  stick.active=true;stick.id=e.pointerId;stick.cx=r.left+r.width/2;stick.cy=r.top+r.height/2;
+  try{moveControl.setPointerCapture(e.pointerId)}catch(_){}
+  updateStick(e);
+ },{passive:false});
+ moveControl.addEventListener('pointermove',e=>{if(stick.active&&e.pointerId===stick.id){e.preventDefault();updateStick(e)}},{passive:false});
+ moveControl.addEventListener('pointerup',stopStick);
+ moveControl.addEventListener('pointercancel',stopStick);
+ moveControl.addEventListener('lostpointercapture',()=>{if(stick.active)stopStick()});
+}
+let lookId=null,lastLookX=0;
+const hud=document.querySelector('.hud');
+if(hud){
+ hud.addEventListener('pointerdown',e=>{
+  if(!window.gameState||e.target.closest('.ctl')||e.clientX<innerWidth*.42)return;
+  lookId=e.pointerId;lastLookX=e.clientX;
+  try{hud.setPointerCapture(e.pointerId)}catch(_){}
+ },{passive:true});
+ hud.addEventListener('pointermove',e=>{
+  if(lookId!==e.pointerId||!window.gameState)return;
+  const dx=e.clientX-lastLookX;
+  window.gameState.player.a-=dx*.006*(settings.sens||1);
+  lastLookX=e.clientX;
+ },{passive:true});
+ const stopLook=e=>{if(lookId===e.pointerId)lookId=null};
+ hud.addEventListener('pointerup',stopLook);hud.addEventListener('pointercancel',stopLook);
+}
+document.querySelectorAll('.ctl:not(.move):not(.turnleft):not(.turnright)').forEach(el=>{
+ const a=el.dataset.action;
+ el.addEventListener('pointerdown',e=>{e.preventDefault();try{el.setPointerCapture(e.pointerId)}catch(_){}if(a==='fire'){mouseDown=true;shoot()}else action(a)});
+ el.addEventListener('pointerup',()=>{mouseDown=false});
+ el.addEventListener('pointercancel',()=>{mouseDown=false});
+ el.addEventListener('lostpointercapture',()=>{mouseDown=false});
+});
+
 window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key==='Tab'){e.preventDefault();toggleBoard(true)}if(e.key==='Escape')toggleBoard(false);if(e.key==='Enter'&&!$('game').classList.contains('hidden'))openPanel('chat');if(e.key.toLowerCase()==='r')reload();if(e.key==='1'||e.key==='2'||e.key==='3'||e.key==='4')action('swap');if(e.key.toLowerCase()==='g')action('grenade');if(e.key.toLowerCase()==='e')action('med');if(e.code==='Space')action('jump')});window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);window.addEventListener('contextmenu',e=>e.preventDefault());$('view').addEventListener('pointerdown',e=>{if(e.button===0){mouseDown=true;shoot()}if(e.button===2&&gameState)gameState.aim=true});window.addEventListener('pointerup',e=>{mouseDown=false;if(e.button===2&&gameState)gameState.aim=false});window.addEventListener('mousemove',e=>{if(gameState&&mouseDown&&e.buttons===1){gameState.player.a+=e.movementX*.003*settings.sens}});document.addEventListener('visibilitychange',()=>{if(document.hidden)keys={}});applySettings();
 </script>
 
