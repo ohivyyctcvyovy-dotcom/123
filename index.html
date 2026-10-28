@@ -135,7 +135,19 @@ window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===
   const scene=new THREE.Scene(); scene.add(new THREE.HemisphereLight(0xd9e8ff,0x202a37,2));
   const key=new THREE.DirectionalLight(0xffdca0,2.1);key.position.set(-3,5,4);scene.add(key);
   const camera=new THREE.PerspectiveCamera(32,Math.max(.1,canvas.clientWidth/canvas.clientHeight),.1,100);camera.position.set(0,1.45,6.4);
-  const loader=new GLTFLoader(); let mixer=null, model=null, last=performance.now();
+  const loader=new GLTFLoader();
+  // Expose joystick movement to the existing game simulation.
+  window.__ozJoystick=joystick;
+  function joystickDown(e){if(!window.gameState)return;e.preventDefault();const r=canvas.getBoundingClientRect();joystick.active=true;joystick.id=e.pointerId;joystick.cx=e.clientX;joystick.cy=e.clientY;}
+  // Replace the old drag-only movement with a visible analog stick and continuous movement.
+  const move=document.querySelector('.ctl.move');
+  if(move){
+   move.addEventListener('pointerdown',e=>{e.preventDefault();const r=move.getBoundingClientRect();joystick.active=true;joystick.id=e.pointerId;joystick.cx=r.left+r.width/2;joystick.cy=r.top+r.height/2;move.setPointerCapture?.(e.pointerId);const dx=e.clientX-joystick.cx,dy=e.clientY-joystick.cy;joystick.x=clamp(dx/joystick.radius,-1,1);joystick.y=clamp(dy/joystick.radius,-1,1);updateJoystickVisual()});
+   move.addEventListener('pointermove',e=>{if(!joystick.active||e.pointerId!==joystick.id)return;e.preventDefault();const dx=e.clientX-joystick.cx,dy=e.clientY-joystick.cy,len=Math.hypot(dx,dy),scale=len>joystick.radius?joystick.radius/len:1;joystick.x=dx*scale/joystick.radius;joystick.y=dy*scale/joystick.radius;updateJoystickVisual()});
+   const stop=()=>{joystick.active=false;joystick.id=null;joystick.x=0;joystick.y=0;updateJoystickVisual()};
+   ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>move.addEventListener(ev,stop));
+  }
+ let mixer=null, model=null, last=performance.now();
   loader.load('./assets/3d/character-male-a.glb',g=>{
    model=g.scene; const box=new THREE.Box3().setFromObject(model), size=box.getSize(new THREE.Vector3()), center=box.getCenter(new THREE.Vector3());
    model.position.sub(center); const scale=3.8/Math.max(size.y,.1); model.scale.setScalar(scale); model.position.y=-.05;
@@ -257,17 +269,6 @@ window.__oz3dActive=true;
    // 3D rifle remains visible even while model/arms are loading.
    if(root.classList.contains('hidden'))return;
    renderer.render(scene,camera);
-  }
-  // Expose joystick movement to the existing game simulation.
-  window.__ozJoystick=joystick;
-  function joystickDown(e){if(!window.gameState)return;e.preventDefault();const r=canvas.getBoundingClientRect();joystick.active=true;joystick.id=e.pointerId;joystick.cx=e.clientX;joystick.cy=e.clientY;}
-  // Replace the old drag-only movement with a visible analog stick and continuous movement.
-  const move=document.querySelector('.ctl.move');
-  if(move){
-   move.addEventListener('pointerdown',e=>{e.preventDefault();const r=move.getBoundingClientRect();joystick.active=true;joystick.id=e.pointerId;joystick.cx=r.left+r.width/2;joystick.cy=r.top+r.height/2;move.setPointerCapture?.(e.pointerId);const dx=e.clientX-joystick.cx,dy=e.clientY-joystick.cy;joystick.x=clamp(dx/joystick.radius,-1,1);joystick.y=clamp(dy/joystick.radius,-1,1);updateJoystickVisual()});
-   move.addEventListener('pointermove',e=>{if(!joystick.active||e.pointerId!==joystick.id)return;e.preventDefault();const dx=e.clientX-joystick.cx,dy=e.clientY-joystick.cy,len=Math.hypot(dx,dy),scale=len>joystick.radius?joystick.radius/len:1;joystick.x=dx*scale/joystick.radius;joystick.y=dy*scale/joystick.radius;updateJoystickVisual()});
-   const stop=()=>{joystick.active=false;joystick.id=null;joystick.x=0;joystick.y=0;updateJoystickVisual()};
-   ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>move.addEventListener(ev,stop));
   }
   // Override the raycast renderer's expensive frame drawing while preserving gameplay logic.
   window.renderGame=()=>{};
