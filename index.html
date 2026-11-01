@@ -31,7 +31,50 @@ function bag(){if(mode!=='play')return;mode='bag';panel('CÂMARA DAS RELÍQUIAS'
 function level(){mode='level';let opts=[['☄','Explosão Celestial','Dano em área +35%','d'],['✚','Cura Divina','Recupera 50% da vida','h'],['🔥','Chuva de Meteoros','Dano contínuo em área','m'],['🛡','Escudo Astral','Reduz dano recebido','s'],['🌀','Teleporte Estelar','Orbes adicionais','o']];panel('CARTAS DE HABILIDADES','Escolha uma carta para receber uma bênção.', '<div class="cards">'+opts.map(o=>'<button class="cardart" data-up="'+o[3]+'"><div class="ico">'+o[0]+'</div><b>'+o[1]+'</b><p class="tiny">'+o[2]+'</p><span class="gold">✦ RARA ✦</span></button>').join('')+'</div>',true);document.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{let u=b.dataset.up;if(u==='d')hero.dmg*=1.35;if(u==='h')hero.hp=Math.min(hero.max,hero.hp+hero.max*.5);if(u==='m')hero.dmg*=1.2;if(u==='s')hero.shield=Math.min(.65,hero.shield+.15);if(u==='o')hero.orbCount=Math.min(5,hero.orbCount+1);close();mode='play';hud();last=performance.now();requestAnimationFrame(loop)})}
 function over(){mode='over';panel('O VAZIO AVANÇOU','A batalha terminou. Fragmentos reunidos: '+coins+'.','<button class="mainbtn" id="again">TENTAR NOVAMENTE</button>');$('#again').onclick=()=>{close();begin()}}
 function draw(t){ctx.clearRect(0,0,w,h);ctx.fillStyle=bgGradient;ctx.fillRect(0,0,w,h);for(let s of stars){ctx.globalAlpha=s.a*(.6+.4*Math.sin(t*.001+s.x*10));ctx.fillStyle=s.blue>.7?'#61d9ff':'#e1efff';ctx.fillRect(s.x*w,s.y*h,s.r,s.r)}ctx.shadowBlur=0;ctx.globalAlpha=1;
-ctx.save();ctx.translate(w/2,h/2);ctx.strokeStyle='#248bcb30';ctx.lineWidth=1;for(let r=75;r<hero.range;r+=42){ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.stroke()}ctx.strokeStyle='#3dcfff';ctx.lineWidth=3;ctx.shadowBlur=0;ctx.beginPath();ctx.arc(0,0,51,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;ctx.fillStyle='#071b39';ctx.beginPath();ctx.moveTo(-39,37);ctx.lineTo(-34,-24);ctx.lineTo(0,-48);ctx.lineTo(34,-24);ctx.lineTo(39,37);ctx.closePath();ctx.fill();ctx.strokeStyle='#d7b85e';ctx.lineWidth=3;ctx.stroke();ctx.fillStyle='#b88935';ctx.fillRect(-29,10,58,31);ctx.fillRect(-37,27,74,9);ctx.fillRect(-32,-31,8,47);ctx.fillRect(24,-31,8,47);ctx.fillStyle='#e8dcc7';ctx.beginPath();ctx.arc(0,-13,14,0,Math.PI*2);ctx.fill();ctx.shadowColor='#fff';ctx.shadowBlur=18;ctx.fillStyle='#fff';ctx.fillRect(-8,-16,5,3);ctx.fillRect(3,-16,5,3);ctx.shadowBlur=0;ctx.fillStyle='#f5d777';ctx.beginPath();ctx.moveTo(-19,-28);ctx.lineTo(-16,-48);ctx.lineTo(-6,-35);ctx.lineTo(0,-56);ctx.lineTo(7,-35);ctx.lineTo(17,-48);ctx.lineTo(20,-28);ctx.closePath();ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,-65);ctx.lineTo(0,-45);ctx.moveTo(-7,-58);ctx.lineTo(7,-58);ctx.stroke();ctx.restore();
+ctx.save();ctx.translate(w/2,h/2);
+/* AURA E MOLDURA CELESTIAL */
+ctx.strokeStyle='#1b8dcc33';ctx.lineWidth=1;
+for(let rr=82;rr<hero.range;rr+=48){ctx.beginPath();ctx.arc(0,0,rr,0,Math.PI*2);ctx.stroke()}
+ctx.strokeStyle='#49d9ff';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,8,78,91,0,0,Math.PI*2);ctx.stroke();
+ctx.strokeStyle='#f4d47a';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,-37,67,Math.PI*1.08,Math.PI*1.92);ctx.stroke();
+/* ENCOSTO ALTO DO TRONO */
+ctx.fillStyle='#07152e';ctx.beginPath();ctx.moveTo(-62,52);ctx.lineTo(-57,-52);ctx.quadraticCurveTo(-52,-93,0,-111);ctx.quadraticCurveTo(52,-93,57,-52);ctx.lineTo(62,52);ctx.closePath();ctx.fill();
+ctx.strokeStyle='#d8b45e';ctx.lineWidth=5;ctx.stroke();
+ctx.fillStyle='#102e55';ctx.beginPath();ctx.moveTo(-49,39);ctx.lineTo(-45,-48);ctx.quadraticCurveTo(-40,-79,0,-96);ctx.quadraticCurveTo(40,-79,45,-48);ctx.lineTo(49,39);ctx.closePath();ctx.fill();
+ctx.strokeStyle='#55cfff';ctx.lineWidth=1.5;ctx.stroke();
+/* ORNAMENTOS E PONTAS */
+ctx.fillStyle='#c99b45';ctx.beginPath();ctx.moveTo(-55,-48);ctx.lineTo(-77,-78);ctx.lineTo(-72,-32);ctx.lineTo(-55,-15);ctx.closePath();ctx.fill();
+ctx.beginPath();ctx.moveTo(55,-48);ctx.lineTo(77,-78);ctx.lineTo(72,-32);ctx.lineTo(55,-15);ctx.closePath();ctx.fill();
+ctx.strokeStyle='#f8df94';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-68,-65);ctx.lineTo(-60,-37);ctx.moveTo(68,-65);ctx.lineTo(60,-37);ctx.stroke();
+/* ALMOFADA E BRAÇOS */
+ctx.fillStyle='#132c50';ctx.beginPath();ctx.roundRect(-43,-7,86,63,12);ctx.fill();ctx.strokeStyle='#d7b45c';ctx.lineWidth=3;ctx.stroke();
+ctx.fillStyle='#b58a3e';ctx.beginPath();ctx.roundRect(-66,5,22,51,7);ctx.roundRect(44,5,22,51,7);ctx.fill();
+ctx.fillStyle='#f3d681';ctx.fillRect(-64,10,18,4);ctx.fillRect(46,10,18,4);
+ctx.fillStyle='#8b642d';ctx.fillRect(-54,49,108,9);ctx.fillStyle='#e4c16a';ctx.fillRect(-59,57,118,7);
+for(let sx of [-54,54]){ctx.fillStyle='#ffe6a0';ctx.beginPath();ctx.arc(sx,52,3,0,Math.PI*2);ctx.fill()}
+/* MANTO REAL */
+ctx.fillStyle='#101d42';ctx.beginPath();ctx.moveTo(-30,-4);ctx.lineTo(-39,39);ctx.lineTo(-29,58);ctx.lineTo(29,58);ctx.lineTo(39,39);ctx.lineTo(30,-4);ctx.quadraticCurveTo(0,-18,-30,-4);ctx.fill();
+ctx.strokeStyle='#d7b65f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-28,1);ctx.lineTo(-20,50);ctx.lineTo(0,59);ctx.lineTo(20,50);ctx.lineTo(28,1);ctx.stroke();
+ctx.fillStyle='#b18a43';ctx.beginPath();ctx.moveTo(-13,1);ctx.lineTo(0,18);ctx.lineTo(13,1);ctx.lineTo(8,48);ctx.lineTo(0,56);ctx.lineTo(-8,48);ctx.closePath();ctx.fill();
+ctx.strokeStyle='#ffe39a';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,19);ctx.lineTo(0,48);ctx.stroke();
+/* OMBROS E PESCOÇO */
+ctx.fillStyle='#d8c9b4';ctx.beginPath();ctx.ellipse(0,-13,22,17,0,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#e8ddcc';ctx.fillRect(-8,-27,16,12);
+/* ROSTO DIVINO */
+ctx.fillStyle='#d8d5d0';ctx.beginPath();ctx.ellipse(0,-43,17,22,0,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#a9a8b4';ctx.beginPath();ctx.ellipse(-13,-42,4,12,-.2,0,Math.PI*2);ctx.ellipse(13,-42,4,12,.2,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#111a31';ctx.fillRect(-12,-48,24,4);
+ctx.fillStyle='#fff';ctx.fillRect(-10,-47,7,3);ctx.fillRect(3,-47,7,3);
+ctx.fillStyle='#d9faff';ctx.fillRect(-9,-47,2,2);ctx.fillRect(4,-47,2,2);
+/* COROA DOURADA DETALHADA */
+ctx.fillStyle='#a8782c';ctx.beginPath();ctx.moveTo(-21,-60);ctx.lineTo(-24,-83);ctx.lineTo(-10,-72);ctx.lineTo(0,-96);ctx.lineTo(10,-72);ctx.lineTo(24,-83);ctx.lineTo(21,-60);ctx.closePath();ctx.fill();
+ctx.strokeStyle='#ffe69a';ctx.lineWidth=2.5;ctx.stroke();
+ctx.fillStyle='#f9d875';ctx.fillRect(-20,-63,40,6);
+ctx.fillStyle='#5ce8ff';ctx.beginPath();ctx.arc(0,-72,4,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#ff6eb7';ctx.beginPath();ctx.arc(-15,-65,2.5,0,Math.PI*2);ctx.arc(15,-65,2.5,0,Math.PI*2);ctx.fill();
+/* CRUZ LUMINOSA ACIMA DA COROA */
+ctx.strokeStyle='#f7ffff';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,-111);ctx.lineTo(0,-94);ctx.moveTo(-6,-105);ctx.lineTo(6,-105);ctx.stroke();
+ctx.restore();
 for(let e of enemy){ctx.save();ctx.translate(e.x,e.y);let col=e.type==='boss'?'#b51e72':e.type==='brute'?'#a34278':'#6349b8';ctx.shadowBlur=0;ctx.fillStyle=col;ctx.beginPath();if(e.type==='shade'){ctx.moveTo(0,-e.r*1.4);ctx.lineTo(e.r,0);ctx.lineTo(0,e.r*1.3);ctx.lineTo(-e.r,0);ctx.closePath()}else{ctx.arc(0,0,e.r,0,Math.PI*2)}ctx.fill();ctx.strokeStyle=e.type==='boss'?'#ffb5fa':'#c7b4ff';ctx.lineWidth=2;ctx.stroke();ctx.shadowBlur=0;ctx.fillStyle='#fff';ctx.fillRect(-e.r*.48,-3,5,3);ctx.fillRect(e.r*.12,-3,5,3);if(e.type==='boss'){ctx.strokeStyle='#ff77ca';ctx.beginPath();ctx.moveTo(-18,-e.r);ctx.lineTo(-28,-e.r-13);ctx.moveTo(18,-e.r);ctx.lineTo(28,-e.r-13);ctx.stroke()}ctx.restore()}
 for(let p of orbs){ctx.shadowBlur=0;ctx.fillStyle='#e8fcff';ctx.beginPath();ctx.arc(p.x,p.y,4.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}for(let p of fx){ctx.globalAlpha=Math.max(0,p.t);ctx.fillStyle=p.col;ctx.fillRect(p.x,p.y,3,3)}ctx.globalAlpha=1;if(burstClock>0){ctx.globalAlpha=burstClock/12;ctx.strokeStyle='#ffe18b';ctx.lineWidth=5;ctx.beginPath();ctx.arc(w/2,h/2,(12-burstClock)*20,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1}}
 function loop(now){if(mode!=='play')return;fpsFrames++;if(now-fpsStamp>=500){fpsValue=Math.round(fpsFrames*1000/(now-fpsStamp));fpsFrames=0;fpsStamp=now;$('#fps').textContent='FPS '+fpsValue;document.title='Trono das Estrelas • '+fpsValue+' FPS'}let dt=Math.min((now-last)/1000,.04);last=now;spawn-=dt;burstClock=Math.max(0,burstClock-dt);if(spawn<=0){spawn=Math.max(.42,1.25-wave*.035);if(enemy.length<18){spawnEnemy();if(Math.random()<.06&&enemy.length<18)spawnEnemy()}}fire(dt);for(let i=orbs.length-1;i>=0;i--){let p=orbs[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;let hit=false;for(let e of enemy)if((e.x-p.x)*(e.x-p.x)+(e.y-p.y)*(e.y-p.y)<(e.r+5)*(e.r+5)){e.hp-=p.damage;hit=true;break}if(hit||p.life<=0)orbs.splice(i,1)}
